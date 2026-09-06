@@ -527,3 +527,5 @@ Evidence files (images, PDFs, documents) can be attached to grievances at submis
 
 **CORS errors in the browser**
 - Ensure the frontend is running on `localhost:2020`. The backend's CORS config only allows that exact origin. If you change the frontend port, update `CorsConfig.java` accordingly.
+#   S t u d e n t - G r i e v a n c e - M a n a g e m e n t - S y s t e m  
+ 
