@@ -1,0 +1,122 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+
+    <div class="page-header">
+      <div>
+        <h2>Student Records</h2>
+        <p class="text-muted">Browse all students — filter by college and department</p>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+
+    <!-- Filters -->
+    <div class="card filter-card">
+      <div class="filters-row">
+
+        <!-- College dropdown -->
+        <div class="filter-group">
+          <label class="filter-label">College</label>
+          <select class="form-control" [(ngModel)]="selectedCollegeId" (ngModelChange)="onCollegeChange()">
+            <option [ngValue]="null">All Colleges</option>
+            <option *ngFor="let c of colleges" [ngValue]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+
+        <!-- Department dropdown (dependent) -->
+        <div class="filter-group">
+          <label class="filter-label">Department</label>
+          <select class="form-control"
+                  [(ngModel)]="selectedDepartmentId"
+                  (ngModelChange)="onDeptChange()"
+                  [disabled]="!selectedCollegeId">
+            <option [ngValue]="null">
+              {{ selectedCollegeId ? (loadingDept ? 'Loading...' : 'All Departments') : 'Select a college first' }}
+            </option>
+            <option *ngFor="let d of departments" [ngValue]="d.id">{{ d.name }}</option>
+          </select>
+        </div>
+
+        <!-- Search -->
+        <div class="filter-group filter-group--search">
+          <label class="filter-label">Search</label>
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control"
+                   placeholder="Name, College ID or email…"
+                   [(ngModel)]="searchTerm"
+                   (keydown)="onSearchKeydown($event)" />
+          </div>
+        </div>
+
+        <button class="btn btn-primary search-btn" (click)="applySearch()">
+          <i class="fas fa-search"></i> Search
+        </button>
+
+        <button class="btn btn-secondary clear-btn" *ngIf="hasFilters" (click)="clearFilters()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+
+      </div>
+
+      <p class="results-count">
+        Showing <strong>{{ filtered.length }}</strong> of <strong>{{ students.length }}</strong> students
+        <span *ngIf="selectedCollegeId"> · <strong>{{ collegeName(selectedCollegeId) }}</strong></span>
+        <span *ngIf="selectedDepartmentId"> / <strong>{{ deptName(selectedDepartmentId) }}</strong></span>
+      </p>
+    </div>
+
+    <app-loading-spinner *ngIf="loading" />
+
+    <ng-container *ngIf="!loading">
+
+      <div class="empty-state card" *ngIf="!filtered.length">
+        <i class="fas fa-user-graduate"></i>
+        <h3>No students found</h3>
+        <p *ngIf="hasFilters">Try adjusting your filters.</p>
+        <p *ngIf="!hasFilters">No students have registered yet.</p>
+      </div>
+
+      <div class="card table-card" *ngIf="filtered.length">
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>College ID</th>
+                <th>College</th>
+                <th>Department</th>
+                <th>Year</th>
+                <th>Section</th>
+                <th>Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of filtered; let i = index">
+                <td class="idx">{{ i + 1 }}</td>
+                <td>
+                  <div class="name-cell">
+                    <span class="name">{{ s.user.firstName }} {{ s.user.lastName }}</span>
+                    <span class="email">{{ s.user.email }}</span>
+                  </div>
+                </td>
+                <td><code class="id-code">{{ s.enrollmentNumber }}</code></td>
+                <td>{{ s.college?.name || '—' }}</td>
+                <td>{{ s.department?.name || '—' }}</td>
+                <td>Year {{ s.year }}</td>
+                <td>{{ s.section }}</td>
+                <td>{{ s.phoneNumber }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>

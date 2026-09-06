@@ -1,0 +1,74 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div><h2>Grievance Management</h2><p class="text-muted">Review and assign grievances in your college</p></div>
+    </div>
+    <div class="alert alert-success" *ngIf="success"><i class="fas fa-check-circle"></i> {{ success }}</div>
+    <div class="alert alert-danger"  *ngIf="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+    <app-loading-spinner *ngIf="loading" />
+
+    <ng-container *ngIf="!loading">
+      <div class="card filters-card">
+        <div class="filters-row">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" placeholder="Search by title..."
+                   [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" />
+          </div>
+          <select class="form-control filter-select" [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
+            <option value="">All Statuses</option>
+            <option *ngFor="let s of statuses" [value]="s">{{ s | titlecase }}</option>
+          </select>
+          <button *ngIf="hasFilters" class="btn btn-secondary btn-sm" (click)="clearFilters()">
+            <i class="fas fa-times"></i> Clear
+          </button>
+        </div>
+        <p class="results-count">Showing <strong>{{ filtered.length }}</strong> of <strong>{{ grievances.length }}</strong></p>
+      </div>
+
+      <div class="empty-state card" *ngIf="!filtered.length">
+        <i class="fas fa-inbox"></i><h3>No grievances found</h3>
+      </div>
+
+      <div class="card table-card" *ngIf="filtered.length">
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Title</th><th>Student</th><th>Category</th><th>Priority</th><th>Status</th><th>Assigned To</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let g of filtered">
+                <td>#{{ g.id }}</td>
+                <td><span class="grievance-title">{{ g.title }}</span></td>
+                <td>{{ g.studentName }}</td>
+                <td><span class="meta-pill">{{ g.category | titlecase }}</span></td>
+                <td><span class="badge badge-{{ g.priority | lowercase }}">{{ g.priority | titlecase }}</span></td>
+                <td><app-status-badge [status]="g.status" /></td>
+                <td>{{ g.assignedFacultyName || '—' }}</td>
+                <td>
+                  <div class="action-cell" *ngIf="assigningId !== g.id">
+                    <button class="btn btn-secondary btn-sm" (click)="assigningId = g.id">
+                      <i class="fas fa-user-plus"></i> Assign
+                    </button>
+                  </div>
+                  <div class="assign-row" *ngIf="assigningId === g.id">
+                    <select class="form-control form-control-sm" [(ngModel)]="selectedFacultyId[g.id]">
+                      <option [ngValue]="undefined" disabled>Select faculty</option>
+                      <option *ngFor="let f of faculty" [ngValue]="f.id">
+                        {{ f.user.firstName }} {{ f.user.lastName }}
+                      </option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" (click)="assign(g.id)">OK</button>
+                    <button class="btn btn-secondary btn-sm" (click)="assigningId = null">✕</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

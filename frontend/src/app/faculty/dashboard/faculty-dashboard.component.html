@@ -1,0 +1,40 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <h2>Welcome, {{ userName }}</h2>
+        <p class="text-muted">Your assigned grievances overview</p>
+      </div>
+      <a routerLink="/faculty/assigned-grievances" class="btn btn-primary">
+        <i class="fas fa-list"></i> All Assigned
+      </a>
+    </div>
+
+    <app-loading-spinner *ngIf="loading" />
+
+    <ng-container *ngIf="!loading">
+      <div class="grid grid-3 mb-4">
+        <app-dashboard-card title="Total Assigned" [value]="total"    icon="fas fa-clipboard-list" color="primary" />
+        <app-dashboard-card title="In Progress"    [value]="pending"  icon="fas fa-clock"          color="warning" />
+        <app-dashboard-card title="Resolved"       [value]="resolved" icon="fas fa-check-circle"   color="success" />
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Assigned Grievances</h3>
+          <a routerLink="/faculty/assigned-grievances" class="btn btn-secondary btn-sm">View All</a>
+        </div>
+        <div class="empty-state" *ngIf="!recent.length">
+          <i class="fas fa-inbox"></i>
+          <p>No grievances assigned to you yet.</p>
+        </div>
+        <div class="grievances-grid" *ngIf="recent.length">
+          <app-grievance-card *ngFor="let g of recent" [grievance]="g"
+            (viewDetails)="goToReview($event)" />
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+.page-header { display:flex; margin-bottom:1.5rem; }
+.page-header h2 { margin-bottom:.25rem; }
+
+/* ── Generate form ── */
+.generate-card { margin-bottom:1.5rem; }
+.generate-card h3 { margin-bottom:1rem; font-size:1rem; font-weight:700; }
+.generate-form { display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; }
+.generate-form .form-group { flex:1; min-width:160px; margin-bottom:0; }
+.req { color:var(--danger); }
+.faint { font-size:.8rem; color:var(--text-muted); }
+.gen-btn { align-self:flex-end; white-space:nowrap; flex-shrink:0; }
+
+/* ── Generated token banner ── */
+.generated-banner {
+  margin-top:1.25rem;
+  padding-top:1.25rem;
+  border-top:1px solid var(--border);
+}
+.generated-inner {
+  display:flex;
+  align-items:flex-start;
+  gap:1rem;
+  background:#f0fdf4;
+  border:1px solid #a7f3d0;
+  border-radius:var(--border-radius);
+  padding:.875rem 1rem;
+}
+.gen-ok-icon { color:#10b981; font-size:1.3rem; flex-shrink:0; margin-top:2px; }
+.gen-body { flex:1; }
+.gen-title { font-size:.85rem; font-weight:600; color:#065f46; margin-bottom:.5rem; }
+.token-box {
+  display:flex; align-items:center; gap:.75rem;
+  background:white; border:1px solid #d1fae5;
+  border-radius:var(--border-radius); padding:.6rem .875rem;
+}
+.token-box code { flex:1; font-size:.82rem; word-break:break-all; color:var(--primary); }
+.dismiss-btn {
+  background:none; border:none; cursor:pointer;
+  color:#6b7280; font-size:1rem; padding:.25rem;
+  flex-shrink:0; margin-top:2px;
+  border-radius:4px; transition:background .15s;
+}
+.dismiss-btn:hover { background:rgba(0,0,0,.06); color:#374151; }
+
+/* ── Table ── */
+.token-short { font-size:.78rem; color:var(--text-secondary); word-break:break-all; }
+.token-dim   { opacity:.45; }
+
+.row-inactive td { opacity:.6; }
+.row-inactive { background:#fafafa; }
+
+.meta-pill {
+  background:var(--bg-primary); border:1px solid var(--border);
+  color:var(--text-secondary); border-radius:9999px;
+  padding:.2rem .55rem; font-size:.72rem; font-weight:600; text-transform:uppercase;
+}
+
+.time-left { font-size:.8rem; font-weight:600; color:var(--success); }
+.time-left--warn { color:var(--text-muted); }
+
+.row-actions { display:flex; gap:.4rem; }
+
+.empty-state { text-align:center; padding:2rem; color:var(--text-muted); }
+.empty-state i { font-size:2rem; margin-bottom:.75rem; display:block; }

@@ -1,0 +1,102 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <app-loading-spinner *ngIf="loading" />
+    <div class="alert alert-danger" *ngIf="error && !loading"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+
+    <ng-container *ngIf="grievance && !loading">
+      <div class="page-header">
+        <div class="header-left">
+          <button class="btn btn-secondary btn-sm" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <div>
+            <h2>Review Grievance #{{ grievance.id }}</h2>
+            <p class="text-muted">{{ grievance.submittedAt | date:'mediumDate' }}</p>
+          </div>
+        </div>
+        <app-status-badge [status]="grievance.status" />
+      </div>
+
+      <div class="alert alert-success" *ngIf="success"><i class="fas fa-check-circle"></i> {{ success }}</div>
+      <div class="alert alert-danger"  *ngIf="error && !loading"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+
+      <div class="review-layout">
+        <div class="col-main">
+          <!-- Details -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-file-alt"></i> Grievance Details</h3>
+              <div class="badges-row">
+                <span class="badge badge-{{ grievance.priority | lowercase }}">{{ grievance.priority | titlecase }} Priority</span>
+                <span class="meta-pill">{{ grievance.category | titlecase }}</span>
+                <span class="meta-pill">{{ grievance.type | titlecase }}</span>
+              </div>
+            </div>
+            <h4 class="grievance-title">{{ grievance.title }}</h4>
+            <p class="grievance-desc">{{ grievance.description }}</p>
+            <div class="info-grid">
+              <div class="info-item"><span class="info-label"><i class="fas fa-user"></i> Student</span><span class="info-value">{{ grievance.studentName }}</span></div>
+              <div class="info-item"><span class="info-label"><i class="fas fa-id-card"></i> Enrollment</span><span class="info-value">{{ grievance.studentEnrollment }}</span></div>
+              <div class="info-item"><span class="info-label"><i class="fas fa-university"></i> College</span><span class="info-value">{{ grievance.collegeName }}</span></div>
+              <div class="info-item"><span class="info-label"><i class="fas fa-sitemap"></i> Department</span><span class="info-value">{{ grievance.departmentName || '—' }}</span></div>
+            </div>
+          </div>
+          <!-- Evidence -->
+          <div class="card">
+            <div class="card-header"><h3><i class="fas fa-paperclip"></i> Evidence</h3></div>
+            <app-evidence-viewer [grievanceId]="grievance.id" />
+          </div>
+          <!-- Resolution note -->
+          <div class="card" *ngIf="grievance.resolutionNote">
+            <div class="card-header"><h3><i class="fas fa-comment-dots"></i> Resolution Note</h3></div>
+            <p class="resolution-note">{{ grievance.resolutionNote }}</p>
+          </div>
+        </div>
+
+        <div class="col-side">
+          <!-- Update status -->
+          <div class="card">
+            <div class="card-header"><h3><i class="fas fa-edit"></i> Update Status</h3></div>
+            <form [formGroup]="statusForm" (ngSubmit)="updateStatus()">
+              <div class="form-group">
+                <label class="form-label">New Status</label>
+                <select class="form-control" formControlName="status">
+                  <option value="" disabled>Select status</option>
+                  <option *ngFor="let s of nextStatuses" [value]="s">{{ s | titlecase }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Resolution Note <span class="text-muted">(optional)</span></label>
+                <textarea class="form-control" rows="3" formControlName="note"
+                          placeholder="Add a note for the student..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-full" [disabled]="saving || statusForm.invalid">
+                <i class="fas fa-spinner fa-spin" *ngIf="saving"></i>
+                {{ saving ? 'Updating...' : 'Update Status' }}
+              </button>
+            </form>
+          </div>
+          <!-- Risk -->
+          <div class="card" *ngIf="grievance.riskAssessment">
+            <div class="card-header">
+              <h3><i class="fas fa-shield-alt"></i> Risk</h3>
+              <app-risk-badge [riskLevel]="grievance.riskAssessment.riskLevel" />
+            </div>
+            <p class="risk-text" *ngIf="grievance.riskAssessment.riskFactors">{{ grievance.riskAssessment.riskFactors }}</p>
+            <p class="risk-text" *ngIf="grievance.riskAssessment.recommendations"><strong>Recommendation:</strong> {{ grievance.riskAssessment.recommendations }}</p>
+          </div>
+          <!-- AI -->
+          <div class="card" *ngIf="grievance.aiAnalysis">
+            <div class="card-header"><h3><i class="fas fa-robot"></i> AI Analysis</h3></div>
+            <div class="ai-row"><span class="ai-label">Category</span><span class="ai-value">{{ grievance.aiAnalysis.predictedCategory || '—' | titlecase }} ({{ pct(grievance.aiAnalysis.categoryConfidence) }})</span></div>
+            <div class="ai-row"><span class="ai-label">Priority</span><span class="ai-value">{{ grievance.aiAnalysis.predictedPriority || '—' | titlecase }} ({{ pct(grievance.aiAnalysis.priorityConfidence) }})</span></div>
+            <div class="ai-row"><span class="ai-label">Duplicate</span><span class="ai-value" [class.flag]="grievance.aiAnalysis.isDuplicate">{{ grievance.aiAnalysis.isDuplicate ? 'Yes' : 'No' }}</span></div>
+            <div class="ai-row"><span class="ai-label">Fake</span><span class="ai-value" [class.flag]="grievance.aiAnalysis.isFakeComplaint">{{ grievance.aiAnalysis.isFakeComplaint ? 'Yes' : 'No' }}</span></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

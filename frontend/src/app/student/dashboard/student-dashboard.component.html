@@ -1,0 +1,43 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+
+    <div class="page-header">
+      <div>
+        <h2>Welcome back, {{ userName }}</h2>
+        <p class="text-muted">Here's a summary of your grievances</p>
+      </div>
+      <a routerLink="/student/submit-grievance" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Submit Grievance
+      </a>
+    </div>
+
+    <app-loading-spinner *ngIf="loading" message="Loading your dashboard..." />
+
+    <ng-container *ngIf="!loading">
+      <div class="grid grid-4 mb-4">
+        <app-dashboard-card title="Total Grievances" [value]="totalGrievances" icon="fas fa-clipboard-list" color="primary" />
+        <app-dashboard-card title="Pending" [value]="pendingGrievances" icon="fas fa-clock" color="warning" />
+        <app-dashboard-card title="Resolved" [value]="resolvedGrievances" icon="fas fa-check-circle" color="success" />
+        <app-dashboard-card title="This Month" [value]="totalGrievances" icon="fas fa-calendar" color="info" />
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Grievances</h3>
+          <a routerLink="/student/my-grievances" class="btn btn-secondary btn-sm">View All</a>
+        </div>
+        <div *ngIf="!recentGrievances.length" class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No grievances yet. <a routerLink="/student/submit-grievance">Submit your first one.</a></p>
+        </div>
+        <div class="grievances-grid" *ngIf="recentGrievances.length">
+          <app-grievance-card *ngFor="let g of recentGrievances" [grievance]="g"
+            (viewDetails)="goToDetails($event)" />
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

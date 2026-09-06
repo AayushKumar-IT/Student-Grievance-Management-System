@@ -1,0 +1,10 @@
+.page-header { display:flex; align-items:flex-start; margin-bottom:1.5rem; }
+.header-left { display:flex; align-items:flex-start; gap:.875rem; }
+.header-left h2 { margin-bottom:.2rem; }
+.form-card { max-width: 720px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+textarea.form-control { resize: vertical; }
+.form-actions { display:flex; justify-content:flex-end; gap:.75rem; margin-top:1rem; }
+.req { color: var(--danger); }
+@media(max-width:600px){ .form-row{ grid-template-columns:1fr; } }
+/* updated */

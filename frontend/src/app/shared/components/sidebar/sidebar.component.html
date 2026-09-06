@@ -1,0 +1,21 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <i class="fas fa-graduation-cap sidebar-logo"></i>
+    <span class="sidebar-title">GMS Portal</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li *ngFor="let item of navItems">
+        <a [routerLink]="item.route" routerLinkActive="active" class="nav-link">
+          <i [class]="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="role-label">{{ userRole | titlecase }}</span>
+  </div>
+</aside>

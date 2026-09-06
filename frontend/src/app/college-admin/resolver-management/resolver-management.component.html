@@ -1,0 +1,40 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header"><div><h2>Resolver Management</h2><p class="text-muted">Control which faculty members can resolve grievances</p></div></div>
+    <div class="alert alert-success" *ngIf="success"><i class="fas fa-check-circle"></i> {{ success }}</div>
+    <div class="alert alert-danger"  *ngIf="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+    <app-loading-spinner *ngIf="loading" />
+    <ng-container *ngIf="!loading">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-header"><h3><i class="fas fa-user-check resolver-icon"></i> Current Resolvers ({{ resolvers.length }})</h3></div>
+          <div class="empty" *ngIf="!resolvers.length"><p>No resolvers assigned yet.</p></div>
+          <div class="faculty-list">
+            <div class="faculty-item" *ngFor="let f of resolvers">
+              <div class="faculty-info">
+                <span class="faculty-name">{{ f.user.firstName }} {{ f.user.lastName }}</span>
+                <span class="faculty-meta">{{ f.designation }} · {{ f.department?.name }}</span>
+              </div>
+              <button class="btn btn-danger btn-sm" (click)="toggle(f)"><i class="fas fa-minus"></i> Remove</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3><i class="fas fa-users"></i> Other Faculty ({{ nonResolvers.length }})</h3></div>
+          <div class="empty" *ngIf="!nonResolvers.length"><p>All faculty are resolvers.</p></div>
+          <div class="faculty-list">
+            <div class="faculty-item" *ngFor="let f of nonResolvers">
+              <div class="faculty-info">
+                <span class="faculty-name">{{ f.user.firstName }} {{ f.user.lastName }}</span>
+                <span class="faculty-meta">{{ f.designation }} · {{ f.department?.name }}</span>
+              </div>
+              <button class="btn btn-success btn-sm" (click)="toggle(f)"><i class="fas fa-plus"></i> Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

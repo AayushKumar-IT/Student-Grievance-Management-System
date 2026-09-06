@@ -1,0 +1,119 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+
+    <div class="page-header">
+      <div>
+        <h2>Faculty Records</h2>
+        <p class="text-muted">Browse all faculty — filter by college and department</p>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+
+    <!-- Filters -->
+    <div class="card filter-card">
+      <div class="filters-row">
+
+        <div class="filter-group">
+          <label class="filter-label">College</label>
+          <select class="form-control" [(ngModel)]="selectedCollegeId" (ngModelChange)="onCollegeChange()">
+            <option [ngValue]="null">All Colleges</option>
+            <option *ngFor="let c of colleges" [ngValue]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Department</label>
+          <select class="form-control"
+                  [(ngModel)]="selectedDepartmentId"
+                  (ngModelChange)="onDeptChange()"
+                  [disabled]="!selectedCollegeId">
+            <option [ngValue]="null">
+              {{ selectedCollegeId ? (loadingDept ? 'Loading...' : 'All Departments') : 'Select a college first' }}
+            </option>
+            <option *ngFor="let d of departments" [ngValue]="d.id">{{ d.name }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group filter-group--search">
+          <label class="filter-label">Search</label>
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control"
+                   placeholder="Name, employee ID, designation…"
+                   [(ngModel)]="searchTerm"
+                   (ngModelChange)="applySearch()" />
+          </div>
+        </div>
+
+        <button class="btn btn-secondary clear-btn" *ngIf="hasFilters" (click)="clearFilters()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+
+      </div>
+
+      <p class="results-count">
+        Showing <strong>{{ filtered.length }}</strong> of <strong>{{ faculty.length }}</strong> faculty
+        <span *ngIf="selectedCollegeId"> · <strong>{{ collegeName(selectedCollegeId) }}</strong></span>
+        <span *ngIf="selectedDepartmentId"> / <strong>{{ deptName(selectedDepartmentId) }}</strong></span>
+      </p>
+    </div>
+
+    <app-loading-spinner *ngIf="loading" />
+
+    <ng-container *ngIf="!loading">
+
+      <div class="empty-state card" *ngIf="!filtered.length">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h3>No faculty found</h3>
+        <p *ngIf="hasFilters">Try adjusting your filters.</p>
+        <p *ngIf="!hasFilters">No faculty have registered yet.</p>
+      </div>
+
+      <div class="card table-card" *ngIf="filtered.length">
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Employee ID</th>
+                <th>College</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Phone</th>
+                <th>Resolver</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let f of filtered; let i = index">
+                <td class="idx">{{ i + 1 }}</td>
+                <td>
+                  <div class="name-cell">
+                    <span class="name">{{ f.user.firstName }} {{ f.user.lastName }}</span>
+                    <span class="email">{{ f.user.email }}</span>
+                  </div>
+                </td>
+                <td><code class="id-code">{{ f.employeeId }}</code></td>
+                <td>{{ f.college?.name || '—' }}</td>
+                <td>{{ f.department?.name || '—' }}</td>
+                <td>{{ f.designation }}</td>
+                <td>{{ f.phoneNumber }}</td>
+                <td>
+                  <span class="badge" [class]="f.isGrievanceResolver ? 'badge-resolved' : 'badge-submitted'">
+                    {{ f.isGrievanceResolver ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>

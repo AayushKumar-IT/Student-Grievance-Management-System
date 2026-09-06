@@ -1,0 +1,120 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+
+    <div class="page-header">
+      <div>
+        <h2>Token Generator</h2>
+        <p class="text-muted">Generate one-time registration tokens for faculty and college admins</p>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+
+    <!-- Generate form -->
+    <div class="card generate-card">
+      <h3>Generate New Token</h3>
+      <form [formGroup]="form" (ngSubmit)="generate()" class="generate-form">
+        <div class="form-group">
+          <label class="form-label">Role <span class="req">*</span></label>
+          <select class="form-control" formControlName="role">
+            <option *ngFor="let r of roles" [value]="r">{{ r | titlecase }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">College <span class="text-muted faint">(optional)</span></label>
+          <select class="form-control" formControlName="collegeId">
+            <option [ngValue]="null">Any college</option>
+            <option *ngFor="let c of colleges" [ngValue]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary gen-btn" [disabled]="saving">
+          <i class="fas fa-spinner fa-spin" *ngIf="saving"></i>
+          <i class="fas fa-key" *ngIf="!saving"></i>
+          {{ saving ? 'Generating…' : 'Generate Token' }}
+        </button>
+      </form>
+
+      <!-- Generated token banner — dismissible -->
+      <div class="generated-banner" *ngIf="generated">
+        <div class="generated-inner">
+          <i class="fas fa-check-circle gen-ok-icon"></i>
+          <div class="gen-body">
+            <p class="gen-title">Token generated — share this with the user:</p>
+            <div class="token-box">
+              <code>{{ generated }}</code>
+              <button class="btn btn-secondary btn-sm" (click)="copy(generated!)" title="Copy">
+                <i class="fas" [class.fa-copy]="copiedToken !== generated" [class.fa-check]="copiedToken === generated"></i>
+                {{ copiedToken === generated ? 'Copied!' : 'Copy' }}
+              </button>
+            </div>
+          </div>
+          <button class="dismiss-btn" (click)="dismissGenerated()" title="Dismiss">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- All tokens table -->
+    <div class="card">
+      <div class="card-header"><h3>All Tokens</h3></div>
+      <app-loading-spinner *ngIf="loading" />
+
+      <div class="empty-state" *ngIf="!loading && !tokens.length">
+        <i class="fas fa-key"></i><p>No tokens generated yet.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading && tokens.length">
+        <table>
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Role</th>
+              <th>College</th>
+              <th>Status</th>
+              <th>Time Left</th>
+              <th>Expires</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of tokens" [class.row-inactive]="!isActive(t)">
+              <td>
+                <code class="token-short" [class.token-dim]="!isActive(t)">{{ t.token }}</code>
+              </td>
+              <td><span class="meta-pill">{{ t.targetRole | titlecase }}</span></td>
+              <td>{{ t.college?.name || 'Any' }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-resolved]="t.used"
+                  [class.badge-rejected]="!t.used && isExpired(t)"
+                  [class.badge-submitted]="isActive(t)">
+                  {{ t.used ? 'Used' : (isExpired(t) ? 'Expired' : 'Active') }}
+                </span>
+              </td>
+              <td>
+                <span class="time-left" [class.time-left--warn]="!isActive(t)">
+                  {{ timeLeft(t) }}
+                </span>
+              </td>
+              <td>{{ t.expiresAt | date:'MMM d, y' }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="btn btn-secondary btn-sm" (click)="copy(t.token)"
+                          [disabled]="!isActive(t)" title="Copy token">
+                    <i class="fas" [class.fa-copy]="copiedToken !== t.token" [class.fa-check]="copiedToken === t.token"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

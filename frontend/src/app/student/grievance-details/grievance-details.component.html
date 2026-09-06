@@ -1,0 +1,257 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+
+    <app-loading-spinner *ngIf="loading" message="Loading grievance details..." />
+
+    <div class="alert alert-danger" *ngIf="error && !loading">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+      <button class="btn btn-secondary btn-sm ml-auto" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <ng-container *ngIf="grievance && !loading">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div class="header-left">
+          <button class="btn btn-secondary btn-sm back-btn" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <div>
+            <h2>Grievance #{{ grievance.id }}</h2>
+            <p class="text-muted">Submitted on {{ grievance.submittedAt | date:'mediumDate' }}</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <app-status-badge [status]="grievance.status" />
+          <a *ngIf="canEdit()" [routerLink]="['/student/grievance', grievance.id, 'edit']"
+             class="btn btn-secondary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+        </div>
+      </div>
+
+      <!-- Duplicate warning -->
+      <div class="alert alert-warning" *ngIf="grievance.isDuplicate">
+        <i class="fas fa-copy"></i>
+        This grievance has been identified as similar to grievance
+        <strong>#{{ grievance.duplicateOfId }}</strong>.
+        It may be processed as part of a common issue.
+      </div>
+
+      <!-- Immediate action alert -->
+      <div class="alert alert-danger" *ngIf="grievance.riskAssessment?.requiresImmediateAction">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Immediate action required.</strong> This grievance has been flagged as high priority.
+      </div>
+
+      <div class="details-layout">
+
+        <!-- LEFT column -->
+        <div class="col-main">
+
+          <!-- Grievance info -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-file-alt"></i> Grievance Details</h3>
+              <div class="badges-row">
+                <span class="badge badge-{{ grievance.priority | lowercase }}">
+                  {{ grievance.priority | titlecase }} Priority
+                </span>
+                <span class="meta-pill">{{ grievance.category | titlecase }}</span>
+                <span class="meta-pill">{{ grievance.type | titlecase }}</span>
+              </div>
+            </div>
+
+            <h4 class="grievance-title">{{ grievance.title }}</h4>
+            <p class="grievance-description">{{ grievance.description }}</p>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label"><i class="fas fa-user"></i> Student</span>
+                <span class="info-value">{{ grievance.studentName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label"><i class="fas fa-id-card"></i> Enrollment</span>
+                <span class="info-value">{{ grievance.studentEnrollment }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label"><i class="fas fa-university"></i> College</span>
+                <span class="info-value">{{ grievance.collegeName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label"><i class="fas fa-sitemap"></i> Department</span>
+                <span class="info-value">{{ grievance.departmentName || '—' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label"><i class="fas fa-user-tie"></i> Assigned To</span>
+                <span class="info-value">{{ grievance.assignedFacultyName || 'Not assigned yet' }}</span>
+              </div>
+              <div class="info-item" *ngIf="grievance.resolvedAt">
+                <span class="info-label"><i class="fas fa-check-circle"></i> Resolved On</span>
+                <span class="info-value">{{ grievance.resolvedAt | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resolution note -->
+          <div class="card" *ngIf="grievance.resolutionNote">
+            <div class="card-header">
+              <h3><i class="fas fa-comment-dots"></i> Resolution Note</h3>
+            </div>
+            <p class="resolution-note">{{ grievance.resolutionNote }}</p>
+          </div>
+
+          <!-- Evidence -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-paperclip"></i> Evidence</h3>
+            </div>
+            <app-evidence-viewer [grievanceId]="grievance.id" [allowDelete]="false" />
+          </div>
+
+        </div>
+
+        <!-- RIGHT column -->
+        <div class="col-side">
+
+          <!-- Status timeline -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-stream"></i> Status</h3>
+            </div>
+            <div class="status-timeline">
+              <div class="timeline-step" [class.active]="true">
+                <div class="step-dot active"></div>
+                <div class="step-info">
+                  <span class="step-label">Submitted</span>
+                  <span class="step-date">{{ grievance.submittedAt | date:'MMM d, y' }}</span>
+                </div>
+              </div>
+              <div class="timeline-step" [class.active]="['UNDER_REVIEW','ASSIGNED','IN_PROGRESS','RESOLVED','CLOSED','ESCALATED'].includes(grievance.status)">
+                <div class="step-dot" [class.active]="['UNDER_REVIEW','ASSIGNED','IN_PROGRESS','RESOLVED','CLOSED','ESCALATED'].includes(grievance.status)"></div>
+                <div class="step-info"><span class="step-label">Under Review</span></div>
+              </div>
+              <div class="timeline-step" [class.active]="['ASSIGNED','IN_PROGRESS','RESOLVED','CLOSED'].includes(grievance.status)">
+                <div class="step-dot" [class.active]="['ASSIGNED','IN_PROGRESS','RESOLVED','CLOSED'].includes(grievance.status)"></div>
+                <div class="step-info"><span class="step-label">Assigned</span></div>
+              </div>
+              <div class="timeline-step" [class.active]="['IN_PROGRESS','RESOLVED','CLOSED'].includes(grievance.status)">
+                <div class="step-dot" [class.active]="['IN_PROGRESS','RESOLVED','CLOSED'].includes(grievance.status)"></div>
+                <div class="step-info"><span class="step-label">In Progress</span></div>
+              </div>
+              <div class="timeline-step" [class.active]="grievance.status === 'RESOLVED' || grievance.status === 'CLOSED'">
+                <div class="step-dot resolved" [class.active]="grievance.status === 'RESOLVED' || grievance.status === 'CLOSED'"></div>
+                <div class="step-info">
+                  <span class="step-label">Resolved</span>
+                  <span class="step-date" *ngIf="grievance.resolvedAt">{{ grievance.resolvedAt | date:'MMM d, y' }}</span>
+                </div>
+              </div>
+              <!-- Rejected branch -->
+              <div class="timeline-step rejected" *ngIf="grievance.status === 'REJECTED'">
+                <div class="step-dot rejected active"></div>
+                <div class="step-info"><span class="step-label">Rejected</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Assessment -->
+          <div class="card" *ngIf="grievance.riskAssessment">
+            <div class="card-header">
+              <h3><i class="fas fa-shield-alt"></i> Risk Assessment</h3>
+              <app-risk-badge [riskLevel]="grievance.riskAssessment.riskLevel" />
+            </div>
+            <div class="risk-score-bar">
+              <div class="score-label">
+                <span>Risk Score</span>
+                <strong>{{ grievance.riskAssessment.riskScore | number:'1.0-0' }}</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill risk-{{ grievance.riskAssessment.riskLevel | lowercase }}"
+                     [style.width.%]="grievance.riskAssessment.riskScore"></div>
+              </div>
+            </div>
+            <div class="risk-detail" *ngIf="grievance.riskAssessment.riskFactors">
+              <p class="risk-label"><i class="fas fa-exclamation-circle"></i> Risk Factors</p>
+              <p class="risk-text">{{ grievance.riskAssessment.riskFactors }}</p>
+            </div>
+            <div class="risk-detail" *ngIf="grievance.riskAssessment.recommendations">
+              <p class="risk-label"><i class="fas fa-lightbulb"></i> Recommendations</p>
+              <p class="risk-text">{{ grievance.riskAssessment.recommendations }}</p>
+            </div>
+          </div>
+
+          <!-- AI Analysis -->
+          <div class="card" *ngIf="grievance.aiAnalysis">
+            <div class="card-header">
+              <h3><i class="fas fa-robot"></i> AI Analysis</h3>
+            </div>
+
+            <div class="ai-pending" *ngIf="grievance.aiAnalysis.analysisNotes === 'AI analysis pending'">
+              <i class="fas fa-hourglass-half"></i>
+              <p>AI analysis is being processed. Check back shortly.</p>
+            </div>
+
+            <ng-container *ngIf="grievance.aiAnalysis.analysisNotes !== 'AI analysis pending'">
+              <div class="ai-row">
+                <span class="ai-label">Predicted Category</span>
+                <span class="ai-value">
+                  {{ grievance.aiAnalysis.predictedCategory || '—' | titlecase }}
+                  <span class="conf" *ngIf="grievance.aiAnalysis.categoryConfidence">
+                    ({{ pct(grievance.aiAnalysis.categoryConfidence) }})
+                  </span>
+                </span>
+              </div>
+              <div class="ai-row">
+                <span class="ai-label">Predicted Priority</span>
+                <span class="ai-value">
+                  {{ grievance.aiAnalysis.predictedPriority || '—' | titlecase }}
+                  <span class="conf" *ngIf="grievance.aiAnalysis.priorityConfidence">
+                    ({{ pct(grievance.aiAnalysis.priorityConfidence) }})
+                  </span>
+                </span>
+              </div>
+              <div class="ai-row">
+                <span class="ai-label">Duplicate Detected</span>
+                <span class="ai-value" [class.flag-yes]="grievance.aiAnalysis.isDuplicate">
+                  {{ grievance.aiAnalysis.isDuplicate ? 'Yes' : 'No' }}
+                  <span *ngIf="grievance.aiAnalysis.duplicateOfId"> (#{{ grievance.aiAnalysis.duplicateOfId }})</span>
+                </span>
+              </div>
+              <div class="ai-row">
+                <span class="ai-label">Anomaly Detected</span>
+                <span class="ai-value" [class.flag-yes]="grievance.aiAnalysis.isAnomaly">
+                  {{ grievance.aiAnalysis.isAnomaly ? 'Yes' : 'No' }}
+                </span>
+              </div>
+              <div class="ai-row">
+                <span class="ai-label">Potential Fake</span>
+                <span class="ai-value" [class.flag-yes]="grievance.aiAnalysis.isFakeComplaint">
+                  {{ grievance.aiAnalysis.isFakeComplaint ? 'Yes' : 'No' }}
+                  <span class="conf" *ngIf="grievance.aiAnalysis.fakeConfidence">
+                    ({{ pct(grievance.aiAnalysis.fakeConfidence) }})
+                  </span>
+                </span>
+              </div>
+              <div class="ai-notes" *ngIf="grievance.aiAnalysis.analysisNotes">
+                <p class="risk-label"><i class="fas fa-sticky-note"></i> Notes</p>
+                <p class="risk-text">{{ grievance.aiAnalysis.analysisNotes }}</p>
+              </div>
+            </ng-container>
+          </div>
+
+          <!-- No AI yet -->
+          <div class="card ai-pending-card" *ngIf="!grievance.aiAnalysis">
+            <h3><i class="fas fa-robot"></i> AI Analysis</h3>
+            <p class="text-muted mt-2">Analysis has not run yet. It will appear here once processed.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>

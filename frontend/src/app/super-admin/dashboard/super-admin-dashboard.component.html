@@ -1,0 +1,45 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div><h2>Welcome, {{ userName }}</h2><p class="text-muted">System-wide overview</p></div>
+      <div class="header-actions">
+        <a routerLink="/super-admin/college-management" class="btn btn-secondary btn-sm"><i class="fas fa-university"></i> Colleges</a>
+        <a routerLink="/super-admin/token-generator"    class="btn btn-primary btn-sm"><i class="fas fa-key"></i> Generate Token</a>
+      </div>
+    </div>
+    <app-loading-spinner *ngIf="loading" />
+    <ng-container *ngIf="!loading">
+      <div class="grid grid-4 mb-4">
+        <app-dashboard-card title="Total Colleges"    [value]="stats.totalColleges    ?? 0" icon="fas fa-university"     color="primary" />
+        <app-dashboard-card title="Total Students"    [value]="stats.totalStudents    ?? 0" icon="fas fa-user-graduate"  color="info" />
+        <app-dashboard-card title="Total Faculty"     [value]="stats.totalFaculty     ?? 0" icon="fas fa-chalkboard-teacher" color="success" />
+        <app-dashboard-card title="Total Grievances"  [value]="stats.totalGrievances  ?? 0" icon="fas fa-clipboard-list" color="warning" />
+      </div>
+      <div class="grid grid-3">
+        <div class="card stat-card">
+          <div class="stat-icon resolved"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-info">
+            <h4>{{ reports.resolvedGrievances ?? 0 }}</h4>
+            <p>Resolved Grievances</p>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon pending"><i class="fas fa-clock"></i></div>
+          <div class="stat-info">
+            <h4>{{ reports.pendingGrievances ?? 0 }}</h4>
+            <p>Pending Grievances</p>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon critical"><i class="fas fa-exclamation-triangle"></i></div>
+          <div class="stat-info">
+            <h4>{{ reports.criticalGrievances ?? 0 }}</h4>
+            <p>Critical / High Risk</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div><h2>Welcome, {{ userName }}</h2><p class="text-muted">College administration overview</p></div>
+    </div>
+    <app-loading-spinner *ngIf="loading" />
+    <ng-container *ngIf="!loading">
+      <div class="grid grid-4 mb-4">
+        <app-dashboard-card title="Total Grievances" [value]="total"    icon="fas fa-clipboard-list" color="primary" />
+        <app-dashboard-card title="Pending"          [value]="pending"  icon="fas fa-clock"          color="warning" />
+        <app-dashboard-card title="Resolved"         [value]="resolved" icon="fas fa-check-circle"   color="success" />
+        <app-dashboard-card title="Students"         [value]="students" icon="fas fa-user-graduate"  color="info" />
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Grievances</h3>
+          <a routerLink="/college-admin/grievance-management" class="btn btn-secondary btn-sm">View All</a>
+        </div>
+        <div class="empty-state" *ngIf="!recent.length">
+          <i class="fas fa-inbox"></i><p>No grievances yet.</p>
+        </div>
+        <div class="grievances-grid" *ngIf="recent.length">
+          <app-grievance-card *ngFor="let g of recent" [grievance]="g" (viewDetails)="goToGrievance($event)" />
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

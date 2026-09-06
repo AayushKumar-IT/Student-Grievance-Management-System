@@ -1,0 +1,43 @@
+<div class="grievance-card card">
+  <div class="grievance-header">
+    <div class="grievance-meta">
+      <span class="grievance-id">#{{ grievance.id }}</span>
+      <span class="grievance-category">{{ grievance.category | titlecase }}</span>
+    </div>
+    <div class="grievance-badges">
+      <app-status-badge [status]="grievance.status" />
+      <app-risk-badge *ngIf="grievance.riskAssessment" [riskLevel]="grievance.riskAssessment.riskLevel" />
+    </div>
+  </div>
+
+  <h4 class="grievance-title">{{ grievance.title }}</h4>
+  <p class="grievance-description">{{ grievance.description | slice:0:150 }}{{ grievance.description.length > 150 ? '...' : '' }}</p>
+
+  <div class="grievance-info">
+    <div class="info-item">
+      <i class="fas fa-user"></i>
+      <span>{{ grievance.studentName }}</span>
+    </div>
+    <div class="info-item">
+      <i class="fas fa-building"></i>
+      <span>{{ grievance.collegeName }}</span>
+    </div>
+    <div class="info-item">
+      <i class="fas fa-calendar"></i>
+      <span>{{ grievance.submittedAt | date:'MMM d, y' }}</span>
+    </div>
+    <div class="info-item" *ngIf="grievance.isDuplicate">
+      <i class="fas fa-copy"></i>
+      <span class="duplicate-label">Duplicate</span>
+    </div>
+  </div>
+
+  <div class="grievance-footer" *ngIf="showActions">
+    <button class="btn btn-primary btn-sm" (click)="viewDetails.emit(grievance.id)">
+      <i class="fas fa-eye"></i> View Details
+    </button>
+    <span *ngIf="grievance.assignedFacultyName" class="assigned-to">
+      <i class="fas fa-user-tie"></i> {{ grievance.assignedFacultyName }}
+    </span>
+  </div>
+</div>

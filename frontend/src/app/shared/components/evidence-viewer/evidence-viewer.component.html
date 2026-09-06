@@ -1,0 +1,22 @@
+<div class="evidence-viewer">
+  <div *ngIf="loading" class="text-center text-muted">Loading evidence...</div>
+  <div *ngIf="!loading && !evidences.length" class="text-center text-muted">No evidence files attached.</div>
+
+  <div class="evidence-list" *ngIf="!loading && evidences.length">
+    <div class="evidence-item" *ngFor="let evidence of evidences">
+      <i [class]="getFileIcon(evidence.fileType)" class="file-icon"></i>
+      <div class="file-info">
+        <span class="file-name">{{ evidence.fileName }}</span>
+        <span class="file-size">{{ formatSize(evidence.fileSize) }}</span>
+      </div>
+      <div class="file-actions">
+        <button class="btn btn-secondary btn-sm" (click)="download(evidence)" title="Download">
+          <i class="fas fa-download"></i>
+        </button>
+        <button *ngIf="allowDelete" class="btn btn-danger btn-sm" (click)="delete(evidence)" title="Delete">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

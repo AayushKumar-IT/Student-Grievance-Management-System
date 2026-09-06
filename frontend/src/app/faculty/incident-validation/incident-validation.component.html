@@ -1,0 +1,44 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div><h2>Incident Validation</h2><p class="text-muted">Review and validate incidents on in-progress grievances</p></div>
+    </div>
+    <app-loading-spinner *ngIf="loading" />
+    <div class="alert alert-danger" *ngIf="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+    <ng-container *ngIf="!loading && !error">
+      <div class="empty-state card" *ngIf="!grievances.length">
+        <i class="fas fa-clipboard-check"></i>
+        <h3>No pending validations</h3>
+        <p>No grievances currently require incident validation.</p>
+      </div>
+      <div class="table-card card" *ngIf="grievances.length">
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Title</th><th>Student</th><th>Category</th><th>Status</th><th>Submitted</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let g of grievances">
+                <td>#{{ g.id }}</td>
+                <td><span class="grievance-title">{{ g.title }}</span></td>
+                <td>{{ g.studentName }}</td>
+                <td><span class="meta-pill">{{ g.category | titlecase }}</span></td>
+                <td><app-status-badge [status]="g.status" /></td>
+                <td>{{ g.submittedAt | date:'MMM d, y' }}</td>
+                <td>
+                  <a [routerLink]="['/faculty/grievance-review', g.id]" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i> Review
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

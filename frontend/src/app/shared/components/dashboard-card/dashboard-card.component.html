@@ -1,0 +1,10 @@
+<div class="dashboard-card" [class]="'card-' + color">
+  <div class="card-icon">
+    <i [class]="icon"></i>
+  </div>
+  <div class="card-body">
+    <p class="card-title">{{ title }}</p>
+    <h2 class="card-value">{{ value }}</h2>
+    <p class="card-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+  </div>
+</div>

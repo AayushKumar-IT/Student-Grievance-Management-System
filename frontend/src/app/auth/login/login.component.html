@@ -1,0 +1,105 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="auth-logo">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <h2>Welcome Back</h2>
+      <p>Sign in to the Grievance Management System</p>
+    </div>
+
+    <!-- Error -->
+    <div class="alert alert-danger" *ngIf="error">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+
+    <!-- Mode toggle tabs -->
+    <div class="mode-tabs">
+      <button type="button" class="mode-tab" [class.active]="mode === 'email'"
+              (click)="setMode('email')">
+        <i class="fas fa-envelope"></i> Email
+      </button>
+      <button type="button" class="mode-tab" [class.active]="mode === 'collegeId'"
+              (click)="setMode('collegeId')">
+        <i class="fas fa-id-card"></i> College ID
+      </button>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+      <!-- EMAIL mode -->
+      <div class="form-group" *ngIf="mode === 'email'">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-control"
+               [class.is-invalid]="f['email'].touched && !f['email'].value"
+               formControlName="email"
+               placeholder="Enter Your Email-id"
+               autocomplete="username" />
+      </div>
+
+      <!-- COLLEGE ID mode -->
+      <ng-container *ngIf="mode === 'collegeId'">
+        <div class="form-group">
+          <label class="form-label">College ID</label>
+          <input type="text" class="form-control"
+                 [class.is-invalid]="f['collegeId'].touched && !f['collegeId'].value"
+                 formControlName="collegeId"
+                 placeholder=" "
+                 autocomplete="username" />
+          <div class="field-hint">
+            <i class="fas fa-info-circle"></i>
+            Students enter their <strong>Enrollment Number</strong>;
+            Faculty enter their <strong>Employee ID</strong>.
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Password (always shown) -->
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-with-icon">
+          <input [type]="showPassword ? 'text' : 'password'"
+                 class="form-control"
+                 [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                 formControlName="password"
+                 placeholder="Enter the Password"
+                 autocomplete="current-password" />
+          <button type="button" class="toggle-password" (click)="showPassword = !showPassword"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <div class="invalid-feedback"
+             *ngIf="f['password'].errors?.['required'] && f['password'].touched">
+          Password is required.
+        </div>
+        <div class="invalid-feedback"
+             *ngIf="f['password'].errors?.['minlength'] && f['password'].touched">
+          Password must be at least 6 characters.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full" [disabled]="loading">
+        <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+        <span>{{ loading ? 'Signing in…' : 'Sign In' }}</span>
+      </button>
+
+    </form>
+
+    <!-- Links -->
+    <div class="auth-links">
+      <p>New user? Register as:</p>
+      <div class="register-links">
+        <a routerLink="/auth/register/student">Student</a>
+        <a routerLink="/auth/register/faculty">Faculty</a>
+        <a routerLink="/auth/register/college-admin">College Admin</a>
+      </div>
+      <div class="setup-link">
+        <a routerLink="/auth/setup">First time here? Set up Super Admin</a>
+      </div>
+    </div>
+
+  </div>
+</div>

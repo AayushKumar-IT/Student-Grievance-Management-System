@@ -1,0 +1,339 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+```
+<div class="auth-header">
+  <div class="auth-logo"><i class="fas fa-user-graduate"></i></div>
+  <h2>Student Registration</h2>
+  <p>Create your student account</p>
+</div>
+
+<!-- Server error / backend warning -->
+<div class="alert alert-danger" *ngIf="error && !loading">
+  <i class="fas fa-exclamation-circle"></i> {{ error }}
+
+  <button type="button" class="btn-retry"
+          (click)="retryLoadColleges()"
+          *ngIf="colleges.length === 0">
+    <i class="fas fa-redo"></i> Retry
+  </button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+  <!-- First Name -->
+  <div class="form-group">
+    <label class="form-label">
+      First Name <span class="required">*</span>
+    </label>
+
+    <input class="form-control"
+           [class.is-invalid]="isInvalid('firstName')"
+           formControlName="firstName"
+           placeholder="Enter first name" />
+
+    <div class="error-msg" *ngIf="isInvalid('firstName')">
+      First name is required.
+    </div>
+  </div>
+
+
+  <!-- Last Name -->
+  <div class="form-group">
+    <label class="form-label">
+      Last Name <span class="required">*</span>
+    </label>
+
+    <input class="form-control"
+           [class.is-invalid]="isInvalid('lastName')"
+           formControlName="lastName"
+           placeholder="Enter last name" />
+
+    <div class="error-msg" *ngIf="isInvalid('lastName')">
+      Last name is required.
+    </div>
+  </div>
+
+
+  <!-- College Name -->
+  <div class="form-group">
+    <label class="form-label">
+      College Name <span class="required">*</span>
+    </label>
+
+    <select class="form-control"
+            [class.is-invalid]="isInvalid('collegeId')"
+            formControlName="collegeId">
+
+      <option [ngValue]="null" disabled>
+        {{ collegesLoading ? 'Loading colleges...' : 'Select your college' }}
+      </option>
+
+      <option *ngFor="let college of colleges"
+              [ngValue]="college.id">
+        {{ college.name }}
+      </option>
+
+    </select>
+
+    <div class="error-msg" *ngIf="isInvalid('collegeId')">
+      Please select a college.
+    </div>
+
+    <div class="hint" *ngIf="collegesLoading">
+      Loading colleges...
+    </div>
+  </div>
+
+
+  <!-- College ID -->
+  <div class="form-group">
+    <label class="form-label">
+      College ID <span class="required">*</span>
+    </label>
+
+    <input class="form-control"
+           [class.is-invalid]="isInvalid('enrollmentNumber')"
+           formControlName="enrollmentNumber"
+           placeholder="Enter your college ID" />
+
+    <div class="hint">
+      Your unique college-issued student ID / roll number.
+    </div>
+
+    <div class="error-msg" *ngIf="isInvalid('enrollmentNumber')">
+      College ID is required.
+    </div>
+  </div>
+
+
+  <!-- Department Name -->
+  <div class="form-group">
+    <label class="form-label">
+      Department Name <span class="required">*</span>
+    </label>
+
+    <select class="form-control"
+            [class.is-invalid]="isInvalid('departmentId')"
+            formControlName="departmentId"
+            [disabled]="!form.get('collegeId')?.value || departmentsLoading">
+
+      <option [ngValue]="null" disabled>
+        {{
+          departmentsLoading
+            ? 'Loading departments...'
+            : form.get('collegeId')?.value
+              ? 'Select your department'
+              : 'Select a college first'
+        }}
+      </option>
+
+      <option *ngFor="let department of departments"
+              [ngValue]="department.id">
+        {{ department.name }}
+      </option>
+
+    </select>
+
+    <div class="error-msg" *ngIf="isInvalid('departmentId')">
+      Please select a department.
+    </div>
+
+    <div class="hint" *ngIf="departmentsLoading">
+      Loading departments...
+    </div>
+
+    <div class="hint"
+         *ngIf="
+           form.get('collegeId')?.value &&
+           !departmentsLoading &&
+           departments.length === 0
+         ">
+      No departments available for this college.
+    </div>
+  </div>
+
+
+  <!-- Year -->
+  <div class="form-group">
+    <label class="form-label">
+      Year <span class="required">*</span>
+    </label>
+
+    <select class="form-control"
+            [class.is-invalid]="isInvalid('year')"
+            formControlName="year">
+
+      <option value="" disabled>Select year</option>
+      <option value="1">1st Year</option>
+      <option value="2">2nd Year</option>
+      <option value="3">3rd Year</option>
+      <option value="4">4th Year</option>
+
+    </select>
+
+    <div class="error-msg" *ngIf="isInvalid('year')">
+      Please select your year.
+    </div>
+  </div>
+
+
+  <!-- Section -->
+  <div class="form-group">
+    <label class="form-label">
+      Section <span class="required">*</span>
+    </label>
+
+    <input class="form-control"
+           [class.is-invalid]="isInvalid('section')"
+           formControlName="section"
+           placeholder="e.g. A"
+           maxlength="5" />
+
+    <div class="error-msg" *ngIf="isInvalid('section')">
+      Section is required.
+    </div>
+  </div>
+
+
+  <!-- Email ID -->
+  <div class="form-group">
+    <label class="form-label">
+      Email ID <span class="required">*</span>
+    </label>
+
+    <input type="email"
+           class="form-control"
+           [class.is-invalid]="isInvalid('email')"
+           formControlName="email"
+           placeholder="Enter your email address" />
+
+    <div class="error-msg" *ngIf="isInvalid('email')">
+      <span *ngIf="f['email'].errors?.['required']">
+        Email is required.
+      </span>
+
+      <span *ngIf="f['email'].errors?.['email']">
+        Enter a valid email address.
+      </span>
+    </div>
+  </div>
+
+
+  <!-- Phone Number -->
+  <div class="form-group">
+    <label class="form-label">
+      Phone Number <span class="required">*</span>
+    </label>
+
+    <input type="tel"
+           class="form-control"
+           [class.is-invalid]="isInvalid('phoneNumber')"
+           formControlName="phoneNumber"
+           placeholder="Enter phone number" />
+
+    <div class="error-msg" *ngIf="isInvalid('phoneNumber')">
+      Phone number is required.
+    </div>
+  </div>
+
+
+  <!-- Password -->
+  <div class="form-group">
+    <label class="form-label">
+      Password <span class="required">*</span>
+    </label>
+
+    <div class="input-with-icon">
+
+      <input [type]="showPassword ? 'text' : 'password'"
+             class="form-control"
+             [class.is-invalid]="isInvalid('password')"
+             formControlName="password"
+             placeholder="Enter password" />
+
+      <button type="button"
+              class="eye-btn"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+
+        <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+
+      </button>
+
+    </div>
+
+    <div class="error-msg" *ngIf="isInvalid('password')">
+
+      <span *ngIf="f['password'].errors?.['required']">
+        Password is required.
+      </span>
+
+      <span *ngIf="f['password'].errors?.['minlength']">
+        Password must be at least 6 characters.
+      </span>
+
+    </div>
+  </div>
+
+
+  <!-- Confirm Password -->
+  <div class="form-group">
+    <label class="form-label">
+      Confirm Password <span class="required">*</span>
+    </label>
+
+    <div class="input-with-icon">
+
+      <input [type]="showConfirmPassword ? 'text' : 'password'"
+             class="form-control"
+             [class.is-invalid]="isInvalid('confirmPassword') || passwordMismatch"
+             formControlName="confirmPassword"
+             placeholder="Re-enter your password" />
+
+      <button type="button"
+              class="eye-btn"
+              (click)="showConfirmPassword = !showConfirmPassword"
+              [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+
+        <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+
+      </button>
+
+    </div>
+
+    <div class="error-msg"
+         *ngIf="isInvalid('confirmPassword') &&
+                f['confirmPassword'].errors?.['required']">
+      Please confirm your password.
+    </div>
+
+    <div class="error-msg" *ngIf="passwordMismatch">
+      Passwords do not match.
+    </div>
+
+  </div>
+
+
+  <!-- Register Button -->
+  <button type="submit"
+          class="btn btn-primary w-full"
+          [disabled]="loading">
+
+    <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+
+    {{ loading ? 'Registering...' : 'Register' }}
+
+  </button>
+
+</form>
+
+
+<p class="text-center mt-4 text-sm">
+  Already have an account?
+  <a routerLink="/auth/login">Sign in</a>
+</p>
+```
+
+  </div>
+</div>

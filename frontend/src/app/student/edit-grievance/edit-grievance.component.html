@@ -1,0 +1,79 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+
+    <div class="page-header">
+      <div class="header-left">
+        <button class="btn btn-secondary btn-sm" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div>
+          <h2>Edit Grievance #{{ id }}</h2>
+          <p class="text-muted">Update your grievance details</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error && !loading">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    <div class="alert alert-success" *ngIf="success">
+      <i class="fas fa-check-circle"></i> {{ success }}
+    </div>
+
+    <div class="card" *ngIf="loading">
+      <p class="text-muted text-center" style="padding:2rem">Loading...</p>
+    </div>
+
+    <div class="card form-card" *ngIf="!loading && form">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="form-group">
+          <label class="form-label">Title <span class="req">*</span></label>
+          <input class="form-control" [class.is-invalid]="isInvalid('title')"
+                 formControlName="title" placeholder="Brief summary of the issue" />
+          <div class="invalid-feedback" *ngIf="isInvalid('title')">
+            <span *ngIf="f['title'].errors?.['required']">Title is required.</span>
+            <span *ngIf="f['title'].errors?.['minlength']">At least 10 characters.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description <span class="req">*</span></label>
+          <textarea class="form-control" rows="6" [class.is-invalid]="isInvalid('description')"
+                    formControlName="description" placeholder="Describe the issue in detail..."></textarea>
+          <div class="invalid-feedback" *ngIf="isInvalid('description')">
+            <span *ngIf="f['description'].errors?.['required']">Description is required.</span>
+            <span *ngIf="f['description'].errors?.['minlength']">At least 30 characters.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category <span class="req">*</span></label>
+            <select class="form-control" formControlName="category">
+              <option *ngFor="let c of categories" [value]="c">{{ c | titlecase }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type <span class="req">*</span></label>
+            <select class="form-control" formControlName="type">
+              <option *ngFor="let t of types" [value]="t">{{ t | titlecase }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="goBack()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+            <i class="fas fa-spinner fa-spin" *ngIf="saving"></i>
+            {{ saving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,315 @@
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════ -->
+<header class="lp-nav" [class.lp-nav--scrolled]="scrolled">
+  <div class="lp-nav__inner">
+
+    <a class="lp-nav__brand" routerLink="/">
+      <div class="lp-nav__logo"><i class="fas fa-graduation-cap"></i></div>
+      <span>STUDGUARD Portal</span>
+    </a>
+
+    <nav class="lp-nav__links" [class.open]="menuOpen">
+      <a href="#features"   (click)="closeMenu()">Features</a>
+      <a href="#how"        (click)="closeMenu()">How It Works</a>
+      <a href="#stats"      (click)="closeMenu()">Stats</a>
+      <a href="#faq"        (click)="closeMenu()">FAQ</a>
+    </nav>
+
+    <div class="lp-nav__cta">
+      <a routerLink="/auth/login"    class="btn-nav btn-nav--ghost">Sign In</a>
+      <a routerLink="/auth/register/student" class="btn-nav btn-nav--solid">Register</a>
+    </div>
+
+    <button class="lp-hamburger" (click)="toggleMenu()" aria-label="Toggle menu">
+      <i [class]="menuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+    </button>
+
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="lp-hero">
+  <!-- floating blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="lp-hero__content">
+    <div class="lp-hero__badge">
+      <i class="fas fa-robot"></i> AI-Powered Grievance Management
+    </div>
+    <h1 class="lp-hero__title">
+      Your Voice,<br />
+      <span class="gradient-text">Heard & Resolved</span>
+    </h1>
+    <p class="lp-hero__sub">
+      A smart, transparent platform that connects students with institutions —
+      powered by AI that classifies, prioritises, and tracks every grievance
+      from submission to resolution.
+    </p>
+    <div class="lp-hero__actions">
+      <a routerLink="/auth/register/student" class="btn-hero btn-hero--primary">
+        <i class="fas fa-user-graduate"></i> Submit a Grievance
+      </a>
+      <a routerLink="/auth/login" class="btn-hero btn-hero--outline">
+        <i class="fas fa-sign-in-alt"></i> Sign In
+      </a>
+    </div>
+
+    <!--<div class="lp-hero__roles">
+      <span class="role-chip"><i class="fas fa-user-graduate"></i> Students</span>
+      <span class="role-chip"><i class="fas fa-chalkboard-teacher"></i> Faculty</span>
+      <span class="role-chip"><i class="fas fa-user-shield"></i> College Admin</span>
+      <span class="role-chip"><i class="fas fa-crown"></i> Super Admin</span>
+    </div>-->
+  </div>
+
+  <div class="lp-hero__visual">
+    <div class="hero-card main-card">
+      <div class="hc-top">
+        <span class="hc-id">#1042</span>
+        <span class="hc-badge submitted">Submitted</span>
+      </div>
+      <p class="hc-title">WiFi not working in Library</p>
+      <p class="hc-meta"><i class="fas fa-tag"></i> Infrastructure &nbsp;|&nbsp; <i class="fas fa-university"></i> Tech University</p>
+      <div class="hc-ai">
+        <i class="fas fa-robot"></i>
+        <div class="hc-ai-pills">
+          <span class="ai-pill priority">HIGH Priority</span>
+          <span class="ai-pill dup">Duplicate detected</span>
+          <span class="ai-pill risk">Risk: Medium</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card mini-card card-a">
+      <i class="fas fa-check-circle success-icon"></i>
+      <div><strong>94%</strong><br/><small>Resolution rate</small></div>
+    </div>
+    <div class="hero-card mini-card card-b">
+      <i class="fas fa-bolt bolt-icon"></i>
+      <div><strong>Fast</strong><br/><small>AI response</small></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     STATS
+════════════════════════════════════════════ -->
+<section class="lp-stats" id="stats-section" id="stats">
+  <div class="lp-container">
+    <div class="stats-grid">
+      <div class="stat-item" *ngFor="let c of counters">
+        <div class="stat-number">{{ c.current | number }}{{ c.suffix }}</div>
+        <div class="stat-label">{{ c.label }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════════ -->
+<section class="lp-section lp-features" id="features">
+  <div class="lp-container">
+    <div class="section-header">
+      <span class="section-eyebrow">What we offer</span>
+      <h2>Everything you need to manage grievances</h2>
+      <p>Built for modern academic institutions with transparency and speed at its core.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let f of features">
+        <div class="feature-icon">
+          <i [class]="f.icon"></i>
+        </div>
+        <h3>{{ f.title }}</h3>
+        <p>{{ f.desc }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════════ -->
+<section class="lp-section lp-how" id="how">
+  <div class="lp-container">
+    <div class="section-header">
+      <span class="section-eyebrow">Process</span>
+      <h2>How it works</h2>
+      <p>Five simple steps from problem to resolution.</p>
+    </div>
+
+    <div class="steps-track">
+      <div class="step-item" *ngFor="let s of steps; let i = index; let last = last">
+        <div class="step-bubble">
+          <i [class]="s.icon"></i>
+          <span class="step-num">{{ i + 1 }}</span>
+        </div>
+        <div class="step-connector" *ngIf="!last"></div>
+        <div class="step-info">
+          <h4>{{ s.label }}</h4>
+          <p>{{ s.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     ROLES
+════════════════════════════════════════════ -->
+<section class="lp-section lp-roles">
+  <div class="lp-container">
+    <div class="section-header">
+      <span class="section-eyebrow">Access Levels</span>
+      <h2>A role for everyone</h2>
+    </div>
+
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="role-icon student"><i class="fas fa-user-graduate"></i></div>
+        <h3>Student</h3>
+        <ul>
+          <li><i class="fas fa-check"></i> Submit grievances</li>
+          <li><i class="fas fa-check"></i> Track live status</li>
+          <li><i class="fas fa-check"></i> Attach evidence</li>
+          <li><i class="fas fa-check"></i> View AI analysis</li>
+        </ul>
+        <a routerLink="/auth/register/student" class="role-cta">Register as Student</a>
+      </div>
+
+      <div class="role-card role-card--featured">
+        <div class="role-badge">Most Active</div>
+        <div class="role-icon faculty"><i class="fas fa-chalkboard-teacher"></i></div>
+        <h3>Faculty</h3>
+        <ul>
+          <li><i class="fas fa-check"></i> Review assigned grievances</li>
+          <li><i class="fas fa-check"></i> Update status & add notes</li>
+          <li><i class="fas fa-check"></i> Validate incidents</li>
+          <li><i class="fas fa-check"></i> View AI risk reports</li>
+        </ul>
+        <a routerLink="/auth/register/faculty" class="role-cta">Register as Faculty</a>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon admin"><i class="fas fa-user-shield"></i></div>
+        <h3>College Admin</h3>
+        <ul>
+          <li><i class="fas fa-check"></i> Manage departments</li>
+          <li><i class="fas fa-check"></i> Assign grievances</li>
+          <li><i class="fas fa-check"></i> View college dashboard</li>
+          <li><i class="fas fa-check"></i> Manage resolvers</li>
+        </ul>
+        <a routerLink="/auth/register/college-admin" class="role-cta">Register as Admin</a>
+      </div>
+
+      <div class="role-card">
+        <div class="role-icon super"><i class="fas fa-crown"></i></div>
+        <h3>Super Admin</h3>
+        <ul>
+          <li><i class="fas fa-check"></i> Manage all colleges</li>
+          <li><i class="fas fa-check"></i> System-wide reports</li>
+          <li><i class="fas fa-check"></i> Generate tokens</li>
+          <li><i class="fas fa-check"></i> Full platform access</li>
+        </ul>
+        <a routerLink="/auth/setup" class="role-cta">Setup Super Admin</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FAQ
+════════════════════════════════════════════ -->
+<section class="lp-section lp-faq" id="faq">
+  <div class="lp-container lp-container--narrow">
+    <div class="section-header">
+      <span class="section-eyebrow">FAQ</span>
+      <h2>Common questions</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs; let i = index"
+           [class.faq-item--open]="faq.open">
+        <button class="faq-q" (click)="toggleFaq(i)">
+          {{ faq.q }}
+          <i [class]="faq.open ? 'fas fa-minus' : 'fas fa-plus'"></i>
+        </button>
+        <div class="faq-a" [class.faq-a--visible]="faq.open">
+          <p>{{ faq.a }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     CTA BANNER
+════════════════════════════════════════════ -->
+<section class="lp-cta">
+  <div class="lp-container">
+    <div class="cta-card">
+      <div class="blob cta-blob-1"></div>
+      <div class="blob cta-blob-2"></div>
+      <h2>Ready to get your grievance heard?</h2>
+      <p>Join thousands of students and institutions already using GMS Portal.</p>
+      <div class="cta-actions">
+        <a routerLink="/auth/register/student" class="btn-hero btn-hero--white">
+          <i class="fas fa-user-graduate"></i> Get Started Free
+        </a>
+        <a routerLink="/auth/login" class="btn-hero btn-hero--outline-white">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="lp-footer">
+  <div class="lp-container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="lp-nav__logo"><i class="fas fa-graduation-cap"></i></div>
+        <span>GMS Portal</span>
+        <p>AI-Based Student Grievance Management System — making student voices matter.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Register</h4>
+          <a routerLink="/auth/register/student">Student</a>
+          <a routerLink="/auth/register/faculty">Faculty</a>
+          <a routerLink="/auth/register/college-admin">College Admin</a>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="#features">Features</a>
+          <a href="#how">How It Works</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a routerLink="/auth/login">Sign In</a>
+          <a routerLink="/auth/setup">System Setup</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 GMS Portal. AI-Based Student Grievance Management System.</p>
+    </div>
+  </div>
+</footer>

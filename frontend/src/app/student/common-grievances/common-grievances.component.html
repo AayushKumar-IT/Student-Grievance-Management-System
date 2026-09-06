@@ -1,0 +1,29 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div>
+        <h2>Common Grievances</h2>
+        <p class="text-muted">Grievances flagged as duplicates or shared issues</p>
+      </div>
+    </div>
+    <app-loading-spinner *ngIf="loading" />
+    <div class="alert alert-danger" *ngIf="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+    <ng-container *ngIf="!loading && !error">
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        These grievances have been identified as similar to others. They may be resolved together.
+      </div>
+      <div class="empty-state card" *ngIf="!grievances.length">
+        <i class="fas fa-check-double"></i>
+        <h3>No common grievances</h3>
+        <p>No duplicate grievances have been detected yet.</p>
+      </div>
+      <div class="grievances-grid" *ngIf="grievances.length">
+        <app-grievance-card *ngFor="let g of grievances" [grievance]="g"
+          (viewDetails)="goToDetails($event)" />
+      </div>
+    </ng-container>
+  </div>
+</div>

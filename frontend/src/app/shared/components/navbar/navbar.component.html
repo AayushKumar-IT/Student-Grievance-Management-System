@@ -1,0 +1,27 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a [routerLink]="getDashboardRoute()" class="brand-link">
+      <i class="fas fa-graduation-cap"></i>
+      <span>GMS</span>
+    </a>
+  </div>
+
+  <div class="navbar-center">
+    <h4 class="page-title">Student Grievance Management System</h4>
+  </div>
+
+  <div class="navbar-actions" *ngIf="currentUser">
+    <div class="user-info">
+      <div class="user-avatar">
+        {{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+        <span class="user-role">{{ currentUser.role | titlecase }}</span>
+      </div>
+    </div>
+    <button class="btn btn-secondary btn-sm" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+</nav>

@@ -1,0 +1,35 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div><h2>Faculty Management</h2><p class="text-muted">Manage faculty in your college</p></div>
+    </div>
+    <div class="alert alert-success" *ngIf="success"><i class="fas fa-check-circle"></i> {{ success }}</div>
+    <div class="alert alert-danger"  *ngIf="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+    <app-loading-spinner *ngIf="loading" />
+    <ng-container *ngIf="!loading">
+      <div class="empty-state card" *ngIf="!faculty.length">
+        <i class="fas fa-chalkboard-teacher"></i><h3>No faculty found</h3>
+      </div>
+      <div class="card table-card" *ngIf="faculty.length">
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Name</th><th>Employee ID</th><th>Department</th><th>Designation</th><th>Phone</th><th>Resolver</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let f of faculty">
+                <td><div class="name-cell"><span class="name">{{ f.user.firstName }} {{ f.user.lastName }}</span><span class="email">{{ f.user.email }}</span></div></td>
+                <td>{{ f.employeeId }}</td>
+                <td>{{ f.department?.name || '—' }}</td>
+                <td>{{ f.designation }}</td>
+                <td>{{ f.phoneNumber }}</td>
+                <td><span class="badge" [class]="f.isGrievanceResolver ? 'badge-resolved' : 'badge-rejected'">{{ f.isGrievanceResolver ? 'Yes' : 'No' }}</span></td>
+                <td><button class="btn btn-sm" [class]="f.isGrievanceResolver ? 'btn-danger' : 'btn-success'" (click)="toggleResolver(f)">{{ f.isGrievanceResolver ? 'Remove' : 'Set Resolver' }}</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

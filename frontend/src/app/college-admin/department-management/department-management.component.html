@@ -1,0 +1,54 @@
+<app-sidebar />
+<div class="main-content">
+  <app-navbar />
+  <div class="page-content">
+    <div class="page-header">
+      <div><h2>Department Management</h2><p class="text-muted">Manage departments in your college</p></div>
+      <button class="btn btn-primary" (click)="showForm = !showForm">
+        <i class="fas fa-plus"></i> {{ showForm ? 'Cancel' : 'Add Department' }}
+      </button>
+    </div>
+    <div class="alert alert-success" *ngIf="success"><i class="fas fa-check-circle"></i> {{ success }}</div>
+    <div class="alert alert-danger"  *ngIf="error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+
+    <div class="card form-card" *ngIf="showForm">
+      <h3>New Department</h3>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name <span class="req">*</span></label>
+            <input class="form-control" [class.is-invalid]="isInvalid('name')" formControlName="name" placeholder="e.g. Computer Science" />
+            <div class="invalid-feedback" *ngIf="isInvalid('name')">Name is required.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Code <span class="req">*</span></label>
+            <input class="form-control" [class.is-invalid]="isInvalid('code')" formControlName="code" placeholder="e.g. CS" />
+            <div class="invalid-feedback" *ngIf="isInvalid('code')">Code is required.</div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+          <i class="fas fa-spinner fa-spin" *ngIf="saving"></i>{{ saving ? 'Creating...' : 'Create Department' }}
+        </button>
+      </form>
+    </div>
+
+    <app-loading-spinner *ngIf="loading" />
+    <ng-container *ngIf="!loading">
+      <div class="empty-state card" *ngIf="!departments.length">
+        <i class="fas fa-sitemap"></i><h3>No departments yet</h3><p>Add your first department above.</p>
+      </div>
+      <div class="card table-card" *ngIf="departments.length">
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Code</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let d of departments; let i = index">
+                <td>{{ i + 1 }}</td><td>{{ d.name }}</td><td><span class="code-badge">{{ d.code }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+.page-header{display:flex;margin-bottom:1.5rem;}.page-header h2{margin-bottom:.25rem;}
+.resolver-icon{color:var(--success);}
+.faculty-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;}
+.faculty-item{display:flex;align-items:center;justify-content:space-between;padding:.65rem .75rem;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--border-radius);}
+.faculty-info{display:flex;flex-direction:column;gap:.1rem;}
+.faculty-name{font-weight:500;font-size:.875rem;color:var(--text-primary);}
+.faculty-meta{font-size:.75rem;color:var(--text-muted);}
+.empty{text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.875rem;}
