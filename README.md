@@ -1,259 +1,406 @@
-# AI-Based Student Grievance Management System
+AI-Based Student Grievance Management System
 
-A full-stack web application for managing student grievances in academic institutions. It combines role-based access control, file evidence upload, and an AI microservice that automatically analyses each grievance for category prediction, fake-complaint detection, duplicate detection, and risk assessment.
+A full-stack web application for managing student grievances in academic institutions. The system combines role-based access control, grievance lifecycle management, evidence uploads, and an AI-powered analysis service for category prediction, fake-complaint detection, duplicate detection, anomaly detection, and risk assessment.
 
----
+📌 Table of Contents
 
-## Table of Contents
+Architecture Overview
 
-- [Architecture Overview](#architecture-overview)
-- [Technology Stack](#technology-stack)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-  - [1. Database Setup](#1-database-setup)
-  - [2. Backend (Spring Boot)](#2-backend-spring-boot)
-  - [3. AI Microservice](#3-ai-microservice)
-  - [4. Frontend (Angular)](#4-frontend-angular)
-- [Configuration Reference](#configuration-reference)
-- [User Roles & Access](#user-roles--access)
-- [First-Time Setup: Creating the Super Admin](#first-time-setup-creating-the-super-admin)
-- [Registration Flow](#registration-flow)
-- [API Endpoints](#api-endpoints)
-- [AI Analysis Pipeline](#ai-analysis-pipeline)
-- [File Upload](#file-upload)
-- [Security Model](#security-model)
-- [Common Issues & Troubleshooting](#common-issues--troubleshooting)
+Technology Stack
 
----
+Key Features
 
-## Architecture Overview
+Project Structure
 
-```
-┌─────────────────────────┐      HTTP / REST      ┌───────────────────────────┐
-│  Angular 17 Frontend    │ ◄──────────────────── │  Spring Boot 3.2 Backend  │
-│  localhost:2020         │ ──────────────────────►│  localhost:2718            │
-└─────────────────────────┘   JWT in headers      └───────────┬───────────────┘
-                                                               │ REST (async)
-                                                               ▼
-                                                  ┌────────────────────────────┐
-                                                  │  AI Python Microservice    │
-                                                  │  localhost:8000            │
-                                                  └────────────────────────────┘
-                                                               │
-                                                  ┌────────────▼───────────────┐
-                                                  │  MySQL 8 Database          │
-                                                  │  grievance_db              │
-                                                  └────────────────────────────┘
-```
+Prerequisites
 
-- **Frontend** — Angular 17 SPA with role-based routing and lazy-loaded components.
-- **Backend** — Spring Boot 3.2 REST API handling auth, grievance lifecycle, evidence storage, and AI orchestration.
-- **AI Microservice** — A separate Python server (not included in this repo) that accepts grievance text and returns analysis results. The backend has a graceful fallback if it is unreachable.
-- **Database** — MySQL 8. Tables are auto-managed by Hibernate (`ddl-auto=update`); no migrations needed.
+Getting Started
 
----
+1. Database Setup
 
-## Technology Stack
+2. Backend Setup
 
-| Layer | Technology | Version |
-|---|---|---|
-| Frontend Framework | Angular | 17 |
-| Frontend Charts | Chart.js + ng2-charts | 4.4 / 5.0 |
-| Backend Framework | Spring Boot | 3.2.0 |
-| Language | Java | 17 |
-| ORM | Spring Data JPA / Hibernate | — |
-| Security | Spring Security + JWT (JJWT) | 0.11.5 |
-| Database | MySQL | 8 |
-| Build Tool (Backend) | Maven | 3.x |
-| Build Tool (Frontend) | Angular CLI | 17 |
+3. AI Microservice
 
----
+4. Frontend Setup
 
-## Features
+Configuration
 
-### Student
-- Submit grievances with title, description, category, type, and optional file attachments
-- Track all submitted grievances and their live status
-- View AI-detected common/duplicate grievances
-- Edit pending grievances
-- View AI analysis and risk assessment results
+User Roles & Access
 
-### Faculty
-- View grievances assigned to them
-- Review and update grievance status (IN_PROGRESS, RESOLVED, REJECTED, etc.)
-- Validate incidents reported against grievances
+First-Time Super Admin Setup
 
-### College Admin
-- Full dashboard with college-level statistics
-- Manage departments, students, and faculty within their college
-- Assign grievances to faculty members (manual or auto-assign)
-- Manage faculty resolver designations
-- Trigger manual AI re-analysis
+Registration Flow
 
-### Super Admin
-- System-wide dashboard and reports
-- Create, update, and delete colleges
-- View all students and faculty across all colleges
-- Generate scoped registration tokens for onboarding new users
-- View system-wide grievance analytics
+API Endpoints
 
-### AI Features (via the external microservice)
-- **Category prediction** with confidence score
-- **Priority prediction** with confidence score
-- **Fake-complaint detection** with confidence score
-- **Duplicate detection** with similarity score (+ local word-overlap fallback)
-- **Anomaly detection** with anomaly score
-- **Risk assessment** — automatically derived from AI flags (CRITICAL / HIGH / MEDIUM / LOW)
+AI Analysis Pipeline
 
----
+File Upload & Evidence
 
-## Project Structure
+Security Model
 
-```
+Common Issues & Troubleshooting
+
+🏗️ Architecture Overview
+
+                    HTTP / REST
+┌───────────────────────────┐
+│     Angular 17 Frontend   │
+│       localhost:2020      │
+└─────────────┬─────────────┘
+              │
+              │ JWT + REST API
+              ▼
+┌───────────────────────────┐
+│   Spring Boot 3.2 Backend │
+│       localhost:2718      │
+└─────────────┬─────────────┘
+              │
+              │ Async REST
+              ▼
+┌───────────────────────────┐
+│   AI Python Microservice  │
+│       localhost:8000      │
+└───────────────────────────┘
+
+              │
+              ▼
+┌───────────────────────────┐
+│         MySQL 8            │
+│       grievance_db         │
+└───────────────────────────┘
+
+Components
+
+Frontend: Angular 17 single-page application with role-based routing and lazy-loaded components.
+
+Backend: Spring Boot 3.2 REST API responsible for authentication, grievance management, evidence storage, authorization, and AI orchestration.
+
+AI Microservice: External Python service that analyzes grievance content. The backend includes a graceful fallback when the AI service is unavailable.
+
+Database: MySQL 8 with Hibernate/JPA schema management.
+
+🛠️ Technology Stack
+
+Layer
+
+Technology
+
+Version
+
+Frontend Framework
+
+Angular
+
+17
+
+Frontend Charts
+
+Chart.js + ng2-charts
+
+4.4 / 5.0
+
+Backend Framework
+
+Spring Boot
+
+3.2.0
+
+Programming Language
+
+Java
+
+17
+
+ORM
+
+Spring Data JPA / Hibernate
+
+—
+
+Security
+
+Spring Security + JJWT
+
+0.11.5
+
+Database
+
+MySQL
+
+8
+
+Backend Build Tool
+
+Maven
+
+3.x
+
+Frontend Build Tool
+
+Angular CLI
+
+17
+
+AI Service
+
+Python
+
+External service
+
+✨ Key Features
+
+👨‍🎓 Student
+
+Submit grievances with title, description, category, type, and optional evidence.
+
+Track submitted grievances and their current status.
+
+View common or duplicate grievances detected by the system.
+
+Edit pending grievances.
+
+View AI analysis and risk assessment results.
+
+👨‍🏫 Faculty
+
+View grievances assigned to them.
+
+Review and update grievance status.
+
+Add resolution notes.
+
+Validate incidents reported through grievances.
+
+Handle grievances when designated as grievance resolvers.
+
+🏫 College Admin
+
+View college-level dashboard statistics.
+
+Manage departments, students, and faculty.
+
+Assign grievances to faculty manually or automatically.
+
+Manage faculty resolver designations.
+
+Trigger manual AI re-analysis.
+
+Monitor grievances within their college.
+
+👑 Super Admin
+
+View system-wide dashboards and reports.
+
+Create, update, and delete colleges.
+
+View students and faculty across all colleges.
+
+Generate registration tokens for onboarding.
+
+View system-wide grievance analytics.
+
+🤖 AI Features
+
+The external AI microservice provides:
+
+Category prediction with confidence score.
+
+Priority prediction with confidence score.
+
+Fake-complaint detection with confidence score.
+
+Duplicate detection with similarity score.
+
+Anomaly detection with anomaly score.
+
+Risk assessment based on AI results.
+
+Local duplicate-detection fallback when the AI service is unavailable.
+
+Risk levels:
+
+CRITICAL
+HIGH
+MEDIUM
+LOW
+
+📁 Project Structure
+
 AI-Based-Student-Grievance-Management-System/
+│
 ├── backend/
 │   ├── pom.xml
-│   └── src/main/
-│       ├── java/com/grievance/management/
-│       │   ├── GrievanceManagementApplication.java
-│       │   ├── config/          # CORS, JWT, RestTemplate, Security, Web
-│       │   ├── controller/      # 9 REST controllers
-│       │   ├── dto/             # 10 request/response DTOs
-│       │   ├── entity/          # 14 JPA entities
-│       │   ├── enums/           # 7 enums (Role, Status, Priority, etc.)
-│       │   ├── exception/       # GlobalExceptionHandler + custom exceptions
-│       │   ├── repository/      # 14 Spring Data JPA repositories
-│       │   ├── security/        # JwtService, JwtAuthFilter, UserDetailsService
-│       │   ├── service/         # 13 business-logic services
-│       │   └── util/            # FileStorageUtil, TokenGenerator
-│       └── resources/
-│           └── application.properties
+│   └── src/
+│       └── main/
+│           ├── java/com/grievance/management/
+│           │   ├── GrievanceManagementApplication.java
+│           │   ├── config/
+│           │   ├── controller/
+│           │   ├── dto/
+│           │   ├── entity/
+│           │   ├── enums/
+│           │   ├── exception/
+│           │   ├── repository/
+│           │   ├── security/
+│           │   ├── service/
+│           │   └── util/
+│           │
+│           └── resources/
+│               └── application.properties
+│
 └── frontend/
     ├── package.json
     ├── angular.json
     ├── tsconfig.json
-    └── src/app/
-        ├── auth/                # Login, student/faculty/admin registration
-        ├── student/             # 6 student views
-        ├── faculty/             # 4 faculty views
-        ├── college-admin/       # 6 college admin views
-        ├── super-admin/         # 6 super admin views
-        ├── core/
-        │   ├── guards/          # authGuard, roleGuard
-        │   ├── interceptors/    # authInterceptor (JWT header injection)
-        │   ├── models/          # TypeScript interfaces
-        │   └── services/        # 9 HTTP services
-        └── shared/components/   # Reusable UI components
-```
+    └── src/
+        └── app/
+            ├── auth/
+            ├── student/
+            ├── faculty/
+            ├── college-admin/
+            ├── super-admin/
+            ├── core/
+            │   ├── guards/
+            │   ├── interceptors/
+            │   ├── models/
+            │   └── services/
+            └── shared/
+                └── components/
 
----
+📋 Prerequisites
 
-## Prerequisites
+Install the following before running the project:
 
-Make sure you have the following installed before you start:
+Tool
 
-| Tool | Minimum Version | Check Command |
-|---|---|---|
-| Java JDK | 17 | `java -version` |
-| Maven | 3.6+ | `mvn -version` |
-| Node.js | 18+ | `node -v` |
-| npm | 9+ | `npm -v` |
-| MySQL | 8.0+ | `mysql --version` |
-| Angular CLI | 17 | `ng version` |
+Minimum Version
 
-Install Angular CLI if not present:
-```bash
+Check Command
+
+Java JDK
+
+17
+
+java -version
+
+Maven
+
+3.6+
+
+mvn -version
+
+Node.js
+
+18+
+
+node -v
+
+npm
+
+9+
+
+npm -v
+
+MySQL
+
+8.0+
+
+mysql --version
+
+Angular CLI
+
+17
+
+ng version
+
+Install Angular CLI if required:
+
 npm install -g @angular/cli@17
-```
 
----
+🚀 Getting Started
 
-## Getting Started
-
-### 1. Database Setup
+1. Database Setup
 
 Start your MySQL server and create the database:
 
-```sql
-mysql -u root -p
-
--- In the MySQL shell:
 CREATE DATABASE grievance_db;
-EXIT;
-```
 
-Hibernate will automatically create all tables on first boot. No schema scripts are needed.
+Hibernate automatically creates and updates the required tables using:
 
----
+spring.jpa.hibernate.ddl-auto=update
 
-### 2. Backend (Spring Boot)
+No manual schema migration is required for the initial setup.
 
-**Step 1 — Configure the application**
+2. Backend Setup
 
-Open `backend/src/main/resources/application.properties` and update the following values:
+Navigate to the backend:
 
-```properties
-# Change to your MySQL credentials
+cd backend
+
+Configure MySQL
+
+Open:
+
+backend/src/main/resources/application.properties
+
+Update your MySQL credentials:
+
 spring.datasource.username=root
 spring.datasource.password=YOUR_MYSQL_PASSWORD
 
-# Replace with a real Base64-encoded 256-bit secret
-# Generate one with: openssl rand -base64 32
+Configure JWT Secret
+
+Generate a secure Base64-encoded secret.
+
+Linux / macOS
+
+openssl rand -base64 32
+
+Windows PowerShell
+
+[Convert]::ToBase64String((1..32 | ForEach-Object { [byte](Get-Random -Max 256) }))
+
+Add the generated value:
+
 jwt.secret=YOUR_BASE64_SECRET_KEY
-```
 
-> ⚠️ **Important:** The default `jwt.secret` in the file is a placeholder string and will cause startup errors or weak security. Always replace it before running.
+⚠️ Security: Never commit your real database password or JWT secret to GitHub. Use environment variables or a local configuration file for production deployments.
 
-**Step 2 — Build and run**
+Run the Backend
 
-```bash
-cd backend
+For development:
 
-# Run directly with Maven (recommended for development)
 mvn spring-boot:run
 
-# Or build a JAR and run it
+Or build and run the JAR:
+
 mvn clean package
 java -jar target/grievance-management-1.0.0.jar
-```
 
-The backend will be available at **http://localhost:2718**
+Backend URL:
 
-On first startup, Hibernate creates all required tables in `grievance_db` automatically.
+http://localhost:2718
 
-**Generate a JWT secret (one-time)**
+3. AI Microservice
 
-On Linux/Mac:
-```bash
-openssl rand -base64 32
-```
+The AI server is a separate Python service and is not included in this repository.
 
-On Windows (PowerShell):
-```powershell
-[Convert]::ToBase64String((1..32 | ForEach-Object { [byte](Get-Random -Max 256) }))
-```
+The backend communicates with:
 
-Paste the output as the value of `jwt.secret` in `application.properties`.
+POST http://localhost:8000/analyze
 
----
+Expected Request
 
-### 3. AI Microservice
-
-The AI server is a **separate Python service** (not included in this repository). The Spring Boot backend calls `POST http://localhost:8000/analyze` asynchronously after each grievance submission.
-
-**Expected request body:**
-```json
 {
   "title": "string",
   "description": "string",
   "grievance_id": "string"
 }
-```
 
-**Expected response body:**
-```json
+Expected Response
+
 {
   "category_confidence": 0.92,
   "priority_confidence": 0.85,
@@ -266,266 +413,905 @@ The AI server is a **separate Python service** (not included in this repository)
   "anomaly_score": 0.1,
   "notes": "string"
 }
-```
 
-> **No AI server?** The backend has a graceful fallback — if the AI server is unreachable, the grievance is still saved successfully and the analysis record shows `"AI analysis pending"`. The local duplicate-detection fallback (word-overlap cosine similarity) will still run.
+AI Service Unavailable
 
----
+If the AI service is unavailable:
 
-### 4. Frontend (Angular)
+The grievance is still saved.
 
-```bash
+The analysis status becomes "AI analysis pending".
+
+Local duplicate detection can still run using word-overlap similarity.
+
+Other grievance-management features continue to work.
+
+4. Frontend Setup
+
+Navigate to the frontend:
+
 cd frontend
 
-# Install dependencies
+Install dependencies:
+
 npm install
 
-# Start the development server
+Start the Angular development server:
+
 npm start
-```
 
-The frontend will be available at **http://localhost:2020**
+Frontend URL:
 
-It proxies all `/api/**` calls to `http://localhost:2718` (configured via the environment file at `src/environments/environment.ts`). Make sure the backend is running first.
+http://localhost:2020
 
-**Build for production:**
-```bash
+The frontend proxies /api/** requests to:
+
+http://localhost:2718
+
+Make sure the backend is running before using the frontend.
+
+Production Build
+
 npm run build
-```
-The compiled output will be in `frontend/dist/`.
 
----
+The compiled application will be generated inside:
 
-## Configuration Reference
+frontend/dist/
 
-All backend configuration lives in `backend/src/main/resources/application.properties`:
+⚙️ Configuration
 
-| Property | Default | Description |
-|---|---|---|
-| `server.port` | `2718` | Backend server port |
-| `spring.datasource.url` | `jdbc:mysql://localhost:3306/grievance_db` | MySQL connection URL |
-| `spring.datasource.username` | `root` | MySQL username |
-| `spring.datasource.password` | `Neyash` | MySQL password — **change this** |
-| `spring.jpa.hibernate.ddl-auto` | `update` | Auto-manages schema from entities |
-| `jwt.secret` | placeholder | Base64 256-bit secret — **must be replaced** |
-| `jwt.expiration` | `86400000` | JWT TTL in ms (24 hours) |
-| `spring.servlet.multipart.max-file-size` | `10MB` | Max size per uploaded file |
-| `spring.servlet.multipart.max-request-size` | `50MB` | Max total upload request size |
-| `file.upload-dir` | `uploads` | Directory for evidence files (relative to working dir) |
-| `ai.server.url` | `http://localhost:8000` | AI microservice base URL |
-| `spring.task.execution.pool.core-size` | `5` | Async thread pool — core threads |
-| `spring.task.execution.pool.max-size` | `10` | Async thread pool — max threads |
+Main backend configuration:
 
----
+backend/src/main/resources/application.properties
 
-## User Roles & Access
+Property
 
-| Role | Description | Default Route |
-|---|---|---|
-| `STUDENT` | Submits and tracks their own grievances | `/student/dashboard` |
-| `FACULTY` | Reviews grievances assigned to them, validates incidents | `/faculty/dashboard` |
-| `COLLEGE_ADMIN` | Manages their college — faculty, students, grievances, departments | `/college-admin/dashboard` |
-| `SUPER_ADMIN` | Full system access — colleges, reports, token generation | `/super-admin/dashboard` |
+Default
 
----
+Description
 
-## First-Time Setup: Creating the Super Admin
+server.port
 
-There is no seeded data. The Super Admin account must be created directly in the database on first setup.
+2718
 
-**Step 1 — Hash a password**
+Backend server port
 
-Use BCrypt to hash a password. You can use an online tool like [bcrypt-generator.com](https://bcrypt-generator.com/) with 10 rounds, or run this Java snippet:
+spring.datasource.url
 
-```java
-System.out.println(new BCryptPasswordEncoder().encode("yourPassword"));
-```
+jdbc:mysql://localhost:3306/grievance_db
 
-**Step 2 — Insert the User record**
+MySQL connection
 
-```sql
-INSERT INTO users (email, password, first_name, last_name, role, enabled)
-VALUES ('superadmin@system.com', '$2a$10$YOUR_BCRYPT_HASH', 'Super', 'Admin', 'SUPER_ADMIN', true);
-```
+spring.datasource.username
 
-**Step 3 — Insert the SuperAdmin profile record**
+root
 
-```sql
+MySQL username
+
+spring.datasource.password
+
+Local value
+
+MySQL password
+
+spring.jpa.hibernate.ddl-auto
+
+update
+
+Hibernate schema management
+
+jwt.secret
+
+Placeholder
+
+Base64 JWT secret
+
+jwt.expiration
+
+86400000
+
+JWT validity in milliseconds
+
+spring.servlet.multipart.max-file-size
+
+10MB
+
+Maximum individual file size
+
+spring.servlet.multipart.max-request-size
+
+50MB
+
+Maximum request size
+
+file.upload-dir
+
+uploads
+
+Evidence storage directory
+
+ai.server.url
+
+http://localhost:8000
+
+AI service URL
+
+spring.task.execution.pool.core-size
+
+5
+
+Async core threads
+
+spring.task.execution.pool.max-size
+
+10
+
+Async maximum threads
+
+👥 User Roles & Access
+
+Role
+
+Description
+
+Default Route
+
+STUDENT
+
+Submit and track grievances
+
+/student/dashboard
+
+FACULTY
+
+Review assigned grievances
+
+/faculty/dashboard
+
+COLLEGE_ADMIN
+
+Manage college operations
+
+/college-admin/dashboard
+
+SUPER_ADMIN
+
+Full system administration
+
+/super-admin/dashboard
+
+👑 First-Time Super Admin Setup
+
+There is no seeded Super Admin account. The initial account must be created directly in the database.
+
+1. Generate a BCrypt Password
+
+You can generate a BCrypt hash using Java:
+
+System.out.println(
+    new BCryptPasswordEncoder().encode("yourPassword")
+);
+
+2. Insert the User
+
+INSERT INTO users
+(email, password, first_name, last_name, role, enabled)
+VALUES
+(
+    'superadmin@system.com',
+    '$2a$10$YOUR_BCRYPT_HASH',
+    'Super',
+    'Admin',
+    'SUPER_ADMIN',
+    true
+);
+
+3. Create the Super Admin Profile
+
 INSERT INTO super_admins (user_id)
 VALUES (LAST_INSERT_ID());
-```
 
-**Step 4 — Log in**
+4. Login
 
-Use these credentials at **http://localhost:2020/auth/login**.
+Open:
 
----
+http://localhost:2020
 
-## Registration Flow
+Then log in using the Super Admin credentials.
 
-New users cannot self-register freely. All registrations require a **Registration Token** issued by the Super Admin. This prevents unauthorized access.
+🔐 Registration Flow
 
-1. Log in as Super Admin → navigate to **Token Generator** (`/super-admin/token-generator`)
-2. Generate a token scoped to the desired role (e.g., `STUDENT`) and college
-3. Share the token with the user
-4. The user visits the appropriate registration page:
-   - Students → `/auth/register/student`
-   - Faculty → `/auth/register/faculty`
-   - College Admins → `/auth/register/college-admin`
-5. They enter their details and the registration token
-6. On success, they receive a JWT and are redirected to their dashboard
+New users cannot register freely. Registration requires a valid Registration Token generated by a Super Admin.
 
-Tokens are single-use and expire after **7 days**.
+Flow
 
----
+Super Admin
+     │
+     ▼
+Generate Registration Token
+     │
+     ▼
+Share Token with User
+     │
+     ▼
+User Opens Registration Page
+     │
+     ▼
+Enter Personal Details + Token
+     │
+     ▼
+Token Validation
+     │
+     ▼
+Account Created
+     │
+     ▼
+JWT Generated
+     │
+     ▼
+Role-Based Dashboard
 
-## API Endpoints
+Registration Pages
 
-All endpoints are prefixed with `/api`. Secured endpoints require `Authorization: Bearer <jwt>`.
+User
 
-### Auth — Public
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/auth/login` | Login, returns JWT |
-| `POST` | `/api/auth/register/student` | Register a student (requires token) |
-| `POST` | `/api/auth/register/faculty` | Register faculty (requires token) |
-| `POST` | `/api/auth/register/college-admin` | Register college admin (requires token) |
+Route
 
-### Tokens — Public + Super Admin
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| `POST` | `/api/tokens/validate` | Public | Validate a registration token |
-| `POST` | `/api/tokens/generate` | SUPER_ADMIN | Generate a new registration token |
-| `GET` | `/api/tokens` | SUPER_ADMIN | List all tokens |
+Student
 
-### Grievances
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| `POST` | `/api/grievances` | STUDENT | Submit a new grievance (supports file upload) |
-| `GET` | `/api/grievances` | COLLEGE_ADMIN, SUPER_ADMIN | Get all grievances |
-| `GET` | `/api/grievances/my` | STUDENT | Get current student's grievances |
-| `GET` | `/api/grievances/assigned` | FACULTY | Get grievances assigned to current faculty |
-| `GET` | `/api/grievances/common` | STUDENT | Get common/duplicate grievances |
-| `GET` | `/api/grievances/{id}` | Any authenticated | Get a grievance by ID |
-| `PUT` | `/api/grievances/{id}` | STUDENT | Update a grievance |
-| `PATCH` | `/api/grievances/{id}/status` | FACULTY, COLLEGE_ADMIN | Update status + optional resolution note |
+/auth/register/student
 
-### AI Analysis
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| `GET` | `/api/ai/analysis/{grievanceId}` | Any authenticated | Get stored AI analysis |
-| `POST` | `/api/ai/analyze/{grievanceId}` | COLLEGE_ADMIN, SUPER_ADMIN | Manually trigger AI analysis |
-| `GET` | `/api/ai/risk/{grievanceId}` | Any authenticated | Get risk assessment |
+Faculty
 
-### College Admin
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/college-admin/dashboard` | Dashboard statistics |
-| `GET/POST` | `/api/college-admin/departments` | List / create departments |
-| `GET` | `/api/college-admin/faculty` | List faculty |
-| `GET` | `/api/college-admin/students` | List students |
-| `GET` | `/api/college-admin/grievances` | List grievances for the college |
-| `POST` | `/api/college-admin/grievances/{id}/assign` | Assign grievance to faculty |
+/auth/register/faculty
 
-### Super Admin
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/super-admin/dashboard` | System-wide statistics |
-| `GET/POST` | `/api/super-admin/colleges` | List / create colleges |
-| `PUT` | `/api/super-admin/colleges/{id}` | Update a college |
-| `DELETE` | `/api/super-admin/colleges/{id}` | Delete a college |
-| `GET` | `/api/super-admin/faculty` | All faculty system-wide |
-| `GET` | `/api/super-admin/students` | All students system-wide |
-| `GET` | `/api/super-admin/reports` | System analytics report |
+College Admin
 
-### Faculty & Students
-| Method | Endpoint | Role | Description |
-|---|---|---|---|
-| `GET` | `/api/faculty` | COLLEGE_ADMIN, SUPER_ADMIN | All faculty |
-| `GET` | `/api/faculty/profile` | FACULTY | Current faculty's profile |
-| `PATCH` | `/api/faculty/{id}/resolver` | COLLEGE_ADMIN | Toggle resolver status |
-| `GET` | `/api/students` | COLLEGE_ADMIN, SUPER_ADMIN | All students |
-| `GET` | `/api/students/profile` | STUDENT | Current student's profile |
+/auth/register/college-admin
 
-### Evidence
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/evidence/grievance/{grievanceId}` | Upload evidence files |
-| `GET` | `/api/evidence/grievance/{grievanceId}` | List evidence for a grievance |
-| `GET` | `/api/evidence/{id}/download` | Download an evidence file |
-| `DELETE` | `/api/evidence/{id}` | Delete an evidence file |
+Registration tokens are:
 
----
+Single-use.
 
-## AI Analysis Pipeline
+Valid for 7 days.
 
-1. Student submits a grievance → backend saves it with status `SUBMITTED` and priority `MEDIUM`
-2. `AIService.analyzeGrievanceAsync()` fires in a background thread (`@Async`)
-3. Backend posts `{ title, description, grievance_id }` to `POST http://localhost:8000/analyze`
-4. Response is parsed into an `AIAnalysis` entity and saved
-5. `RiskAssessmentService.assessRisk()` runs immediately after:
-   - Anomaly detected → +40 points
-   - Fake complaint detected → −20 points
-   - Anomaly score contributes up to +30 points
-   - Final score clamped to [0, 100]
-   - CRITICAL ≥ 75 | HIGH ≥ 50 | MEDIUM ≥ 25 | LOW < 25
-6. Risk level `CRITICAL` or `HIGH` sets `requiresImmediateAction = true`
-7. If the AI server is unreachable, analysis shows `"AI analysis pending"` and the local **DuplicateDetectionService** runs a word-overlap similarity check as a fallback
+Scoped to the appropriate role and college.
 
----
+🔌 API Endpoints
 
-## File Upload
+All API endpoints use the /api prefix.
 
-Evidence files (images, PDFs, documents) can be attached to grievances at submission time or uploaded separately.
+Authenticated requests require:
 
-- Files are stored locally under `uploads/grievances/{grievanceId}/`
-- Filenames are UUID-renamed to prevent conflicts
-- Max file size: **10 MB** per file; max request size: **50 MB**
-- The `uploads/` directory is created automatically on first use
-- There is no cloud storage integration — all files live on the server's filesystem
+Authorization: Bearer <JWT_TOKEN>
 
----
+Authentication
 
-## Security Model
+Method
 
-- **Authentication:** Stateless JWT (HS256, 24-hour TTL). No session cookies, no refresh tokens.
-- **Token storage (frontend):** `localStorage` under `grievance_token`.
-- **All requests** from the frontend automatically get `Authorization: Bearer <token>` injected by `authInterceptor`.
-- **Public endpoints:** `/api/auth/**` and `/api/tokens/validate` only.
-- **Role enforcement:** Both Spring Security's `@PreAuthorize` on controller methods and Angular `roleGuard` on frontend routes.
-- **Passwords:** BCrypt-hashed — never stored in plain text.
-- **CORS:** Restricted to `http://localhost:2020` in development. Update `CorsConfig.java` for any other origin.
-- **Registration gating:** No user can register without a valid, non-expired, single-use `RegistrationToken`.
+Endpoint
 
----
+Description
 
-## Common Issues & Troubleshooting
+POST
 
-**Backend fails to start — "Access denied for user"**
-- Verify `spring.datasource.username` and `spring.datasource.password` in `application.properties` match your MySQL installation.
+/api/auth/login
 
-**Backend fails to start — JWT key error**
-- The default `jwt.secret` is a placeholder. Replace it with a real Base64-encoded 256-bit key (see [Getting Started > Backend](#2-backend-spring-boot)).
+Login and receive JWT
 
-**Frontend shows "Network Error" or blank data**
-- Make sure the backend is running on port 2718 before starting the frontend.
-- Check that `src/environments/environment.ts` points to `http://localhost:2718/api`.
+POST
 
-**AI analysis always shows "pending"**
-- The AI microservice at `http://localhost:8000` is either not running or not responding. The backend degrades gracefully — all other features work normally.
+/api/auth/register/student
 
-**Cannot register a new user — "Invalid token"**
-- Registration requires a token generated by the Super Admin. Generate one via `/super-admin/token-generator` or `POST /api/tokens/generate`.
-- Tokens expire after 7 days and are single-use.
+Register student
 
-**Faculty never gets auto-assigned grievances**
-- Faculty must have `isGrievanceResolver = true`. A College Admin can toggle this via the Resolver Management page or `PATCH /api/faculty/{id}/resolver`.
+POST
 
-**File uploads fail**
-- Check that the `uploads/` directory exists and the application has write permission to it.
-- Verify the file does not exceed the 10 MB per-file limit.
+/api/auth/register/faculty
 
-**CORS errors in the browser**
-- Ensure the frontend is running on `localhost:2020`. The backend's CORS config only allows that exact origin. If you change the frontend port, update `CorsConfig.java` accordingly.
-#   S t u d e n t - G r i e v a n c e - M a n a g e m e n t - S y s t e m  
- 
+Register faculty
+
+POST
+
+/api/auth/register/college-admin
+
+Register college admin
+
+Registration Tokens
+
+Method
+
+Endpoint
+
+Role
+
+Description
+
+POST
+
+/api/tokens/validate
+
+Public
+
+Validate registration token
+
+POST
+
+/api/tokens/generate
+
+SUPER_ADMIN
+
+Generate token
+
+GET
+
+/api/tokens
+
+SUPER_ADMIN
+
+List tokens
+
+Grievances
+
+Method
+
+Endpoint
+
+Role
+
+Description
+
+POST
+
+/api/grievances
+
+STUDENT
+
+Submit grievance
+
+GET
+
+/api/grievances
+
+Admin
+
+Get grievances
+
+GET
+
+/api/grievances/my
+
+STUDENT
+
+Get student's grievances
+
+GET
+
+/api/grievances/assigned
+
+FACULTY
+
+Get assigned grievances
+
+GET
+
+/api/grievances/common
+
+STUDENT
+
+Get common/duplicate grievances
+
+GET
+
+/api/grievances/{id}
+
+Authenticated
+
+Get grievance
+
+PUT
+
+/api/grievances/{id}
+
+STUDENT
+
+Update grievance
+
+PATCH
+
+/api/grievances/{id}/status
+
+Faculty/Admin
+
+Update status
+
+AI Analysis
+
+Method
+
+Endpoint
+
+Role
+
+Description
+
+GET
+
+/api/ai/analysis/{grievanceId}
+
+Authenticated
+
+Get AI analysis
+
+POST
+
+/api/ai/analyze/{grievanceId}
+
+Admin
+
+Trigger AI analysis
+
+GET
+
+/api/ai/risk/{grievanceId}
+
+Authenticated
+
+Get risk assessment
+
+College Admin
+
+Method
+
+Endpoint
+
+Description
+
+GET
+
+/api/college-admin/dashboard
+
+Dashboard statistics
+
+GET/POST
+
+/api/college-admin/departments
+
+List/create departments
+
+GET
+
+/api/college-admin/faculty
+
+List faculty
+
+GET
+
+/api/college-admin/students
+
+List students
+
+GET
+
+/api/college-admin/grievances
+
+College grievances
+
+POST
+
+/api/college-admin/grievances/{id}/assign
+
+Assign grievance
+
+Super Admin
+
+Method
+
+Endpoint
+
+Description
+
+GET
+
+/api/super-admin/dashboard
+
+System dashboard
+
+GET/POST
+
+/api/super-admin/colleges
+
+List/create colleges
+
+PUT
+
+/api/super-admin/colleges/{id}
+
+Update college
+
+DELETE
+
+/api/super-admin/colleges/{id}
+
+Delete college
+
+GET
+
+/api/super-admin/faculty
+
+All faculty
+
+GET
+
+/api/super-admin/students
+
+All students
+
+GET
+
+/api/super-admin/reports
+
+System analytics
+
+Faculty & Students
+
+Method
+
+Endpoint
+
+Role
+
+Description
+
+GET
+
+/api/faculty
+
+Admin
+
+List faculty
+
+GET
+
+/api/faculty/profile
+
+Faculty
+
+Current faculty profile
+
+PATCH
+
+/api/faculty/{id}/resolver
+
+Admin
+
+Toggle resolver status
+
+GET
+
+/api/students
+
+Admin
+
+List students
+
+GET
+
+/api/students/profile
+
+Student
+
+Current student profile
+
+Evidence
+
+Method
+
+Endpoint
+
+Description
+
+POST
+
+/api/evidence/grievance/{grievanceId}
+
+Upload evidence
+
+GET
+
+/api/evidence/grievance/{grievanceId}
+
+List evidence
+
+GET
+
+/api/evidence/{id}/download
+
+Download evidence
+
+DELETE
+
+/api/evidence/{id}
+
+Delete evidence
+
+🤖 AI Analysis Pipeline
+
+The grievance analysis process works asynchronously:
+
+Student submits grievance
+          │
+          ▼
+Backend saves grievance
+Status = SUBMITTED
+Priority = MEDIUM
+          │
+          ▼
+AIService.analyzeGrievanceAsync()
+          │
+          ▼
+POST /analyze
+AI Microservice
+          │
+          ▼
+AI Analysis Result
+          │
+          ▼
+AIAnalysis Entity Saved
+          │
+          ▼
+RiskAssessmentService
+          │
+          ▼
+Risk Level
+CRITICAL / HIGH / MEDIUM / LOW
+
+Risk Calculation
+
+The system uses AI results to calculate a risk score:
+
+Anomaly detected → +40 points
+
+Fake complaint detected → −20 points
+
+Anomaly score → contributes up to +30 points
+
+Final score is clamped between 0 and 100
+
+Risk levels:
+
+Score
+
+Risk
+
+75–100
+
+CRITICAL
+
+50–74
+
+HIGH
+
+25–49
+
+MEDIUM
+
+<25
+
+LOW
+
+CRITICAL and HIGH grievances are marked as requiring immediate action.
+
+📎 File Upload & Evidence
+
+Students can attach evidence when submitting a grievance or upload evidence separately.
+
+Supported evidence can include:
+
+Images
+
+PDFs
+
+Documents
+
+Storage
+
+Files are stored locally:
+
+uploads/
+└── grievances/
+    └── {grievanceId}/
+
+Upload Rules
+
+Maximum individual file size: 10 MB
+
+Maximum request size: 50 MB
+
+Uploaded filenames are UUID-renamed.
+
+The uploads/ directory is created automatically.
+
+Files are stored on the server filesystem.
+
+No cloud-storage integration is currently included.
+
+🔒 Security Model
+
+Authentication
+
+Stateless JWT authentication.
+
+HS256 signing.
+
+JWT validity: 24 hours.
+
+No session cookies.
+
+No refresh tokens.
+
+Frontend Token Handling
+
+JWT is stored in:
+
+localStorage
+
+under:
+
+grievance_token
+
+The Angular authInterceptor automatically adds:
+
+Authorization: Bearer <JWT>
+
+to authenticated API requests.
+
+Authorization
+
+The system uses both:
+
+Spring Security @PreAuthorize
+
+Angular roleGuard
+
+Password Security
+
+Passwords are stored using:
+
+BCrypt
+
+Passwords are never stored as plain text.
+
+CORS
+
+Development frontend origin:
+
+http://localhost:2020
+
+If the frontend runs on another origin or port, update the backend CORS configuration.
+
+Registration Security
+
+Users cannot freely create accounts. Registration requires a valid:
+
+Registration token
+
+Role
+
+College scope
+
+Expiration period
+
+Single-use token
+
+🛠️ Common Issues & Troubleshooting
+
+Backend: "Access denied for user"
+
+Check:
+
+spring.datasource.username=root
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+
+Make sure the credentials match your MySQL installation.
+
+Backend: JWT Key Error
+
+The default JWT secret is only a placeholder.
+
+Generate a secure Base64 key and update:
+
+jwt.secret=YOUR_BASE64_SECRET_KEY
+
+Frontend: Network Error
+
+Make sure the backend is running:
+
+http://localhost:2718
+
+Then verify that the frontend environment configuration points to:
+
+http://localhost:2718/api
+
+AI Analysis Remains "Pending"
+
+Check whether the AI service is running:
+
+http://localhost:8000
+
+The backend will continue to work even when the AI service is unavailable.
+
+Registration: "Invalid Token"
+
+Registration requires a valid token.
+
+Generate one through:
+
+/super-admin/token-generator
+
+or:
+
+POST /api/tokens/generate
+
+Remember:
+
+Tokens expire after 7 days.
+
+Tokens are single-use.
+
+Faculty Not Receiving Auto-Assigned Grievances
+
+The faculty member must be marked as:
+
+isGrievanceResolver = true
+
+A College Admin can change this through Resolver Management or:
+
+PATCH /api/faculty/{id}/resolver
+
+File Upload Failure
+
+Check:
+
+The uploads/ directory is writable.
+
+The file is not larger than 10 MB.
+
+The total request is not larger than 50 MB.
+
+CORS Error
+
+The backend allows:
+
+http://localhost:2020
+
+If the Angular application is running on another port, update the backend CORS configuration accordingly.
+
+📌 Project Summary
+
+The AI-Based Student Grievance Management System provides a centralized platform for students to submit and track grievances while enabling faculty and administrators to manage, prioritize, and resolve complaints efficiently.
+
+The combination of:
+
+Role-based access control
+
+JWT authentication
+
+Evidence management
+
+AI-powered grievance analysis
+
+Duplicate and fake-complaint detection
+
+Risk assessment
+
+College-level and system-wide dashboards
+
+creates a structured and scalable approach to grievance management in academic institutions.
+
+👨‍💻 Development
+
+Built as a full-stack academic project using:
+
+Angular + Spring Boot + MySQL + Python AI Microservice
+
